@@ -827,55 +827,130 @@
       showDashboardTab('overview');
     }
 
-    // Generate tasks for all plants
+    // IMPROVED TASK GENERATION FOR TOMATOES
     function generateTasksForPlants(plants) {
       const tasks = [];
       const today = new Date();
 
-      plants.forEach(plant => {
+      plants.forEach((plant, plantIdx) => {
         if (!plant.type) return;
         
-        // Watering task
+        const plantName = plant.type.split(' (')[0].toLowerCase();
+        const plantingDate = new Date(plant.date);
+        
+        // TOMATO-SPECIFIC TASKS
+        if (plantName.includes('pomodoro')) {
+          // 1. Add fertiliser when planting (should be done on planting date)
+          const fertilizerDate = new Date(plantingDate);
+          const daysSincePlanting = Math.floor((today - fertilizerDate) / (1000 * 60 * 60 * 24));
+          
+          tasks.push({
+            plantName: plant.type,
+            title: 'Aggiungere fertilizzante',
+            description: 'Aggiungere fertilizzante durante la semina',
+            dueDate: fertilizerDate,
+            priority: daysSincePlanting > 0 ? 'high' : 'medium',
+            status: daysSincePlanting > 0 ? 'overdue' : (daysSincePlanting === 0 ? 'due-today' : 'upcoming'),
+            plantIdx: plantIdx
+          });
+
+          // 2. Use corroborant on the plant, repeat every 15 days
+          let corroborantDate = new Date(plantingDate);
+          corroborantDate.setDate(corroborantDate.getDate() + 7); // Start 7 days after planting
+          
+          for (let i = 0; i < 6; i++) { // Generate 6 corroborant treatments
+            const treatmentDate = new Date(corroborantDate);
+            treatmentDate.setDate(treatmentDate.getDate() + (i * 15));
+            
+            const daysUntilTreatment = Math.floor((treatmentDate - today) / (1000 * 60 * 60 * 24));
+            
+            let status = 'upcoming';
+            let priority = 'medium';
+            
+            if (daysUntilTreatment < 0) {
+              status = 'overdue';
+              priority = 'high';
+            } else if (daysUntilTreatment === 0) {
+              status = 'due-today';
+              priority = 'high';
+            }
+            
+            tasks.push({
+              plantName: plant.type,
+              title: 'Applicare corroborante',
+              description: `Trattamento corroborante #${i + 1} (ogni 15 giorni)`,
+              dueDate: treatmentDate,
+              priority: priority,
+              status: status,
+              plantIdx: plantIdx
+            });
+          }
+
+          // 3. Harvest after 2 months
+          const harvestDate = new Date(plantingDate);
+          harvestDate.setMonth(harvestDate.getMonth() + 2);
+          
+          const daysUntilHarvest = Math.floor((harvestDate - today) / (1000 * 60 * 60 * 24));
+          
+          let harvestStatus = 'upcoming';
+          let harvestPriority = 'low';
+          
+          if (daysUntilHarvest < 0) {
+            harvestStatus = 'overdue';
+            harvestPriority = 'high';
+          } else if (daysUntilHarvest === 0) {
+            harvestStatus = 'due-today';
+            harvestPriority = 'high';
+          } else if (daysUntilHarvest <= 7) {
+            harvestPriority = 'medium';
+          }
+          
+          tasks.push({
+            plantName: plant.type,
+            title: 'Raccolta',
+            description: 'Raccogliere i pomodori maturi (dopo 2 mesi dalla semina)',
+            dueDate: harvestDate,
+            priority: harvestPriority,
+            status: harvestStatus,
+            plantIdx: plantIdx
+          });
+        }
+        
+        // GENERIC TASKS FOR ALL PLANTS
+        // Weekly watering
+        const nextWatering = new Date(today);
+        nextWatering.setDate(nextWatering.getDate() + 1);
+        
         tasks.push({
           plantName: plant.type,
           title: 'Innaffiare',
-          description: 'Innaffiare secondo la cadenza',
-          dueDate: new Date(today.getTime() + 1 * 24 * 60 * 60 * 1000), // tomorrow
+          description: 'Innaffiatura regolare',
+          dueDate: nextWatering,
           priority: 'medium',
-          status: 'upcoming'
+          status: 'upcoming',
+          plantIdx: plantIdx
         });
 
-        // De-weeding task
+        // Monthly weeding
+        const nextWeeding = new Date(plantingDate);
+        nextWeeding.setDate(nextWeeding.getDate() + 30);
+        
+        const daysUntilWeeding = Math.floor((nextWeeding - today) / (1000 * 60 * 60 * 24));
+        
         tasks.push({
           plantName: plant.type,
           title: 'Diserbo',
-          description: 'Rimuovere le erbacce',
-          dueDate: new Date(today.getTime() - 1 * 24 * 60 * 60 * 1000), // yesterday
-          priority: 'high',
-          status: 'overdue'
-        });
-
-        // Bio fertiliser task
-        tasks.push({
-          plantName: plant.type,
-          title: 'Concimazione biologica',
-          description: 'Aggiungere fertilizzante biologico',
-          dueDate: new Date(today.getTime()), // today
-          priority: 'low',
-          status: 'due-today'
-        });
-
-        // Harvest task
-        tasks.push({
-          plantName: plant.type,
-          title: 'Raccolta',
-          description: 'Raccogliere i frutti',
-          dueDate: new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000), // in 7 days
-          priority: 'medium',
-          status: 'upcoming'
+          description: 'Rimuovere le erbacce intorno alla pianta',
+          dueDate: nextWeeding,
+          priority: daysUntilWeeding < 0 ? 'high' : 'low',
+          status: daysUntilWeeding < 0 ? 'overdue' : (daysUntilWeeding === 0 ? 'due-today' : 'upcoming'),
+          plantIdx: plantIdx
         });
       });
 
+      // Sort tasks by due date
+      tasks.sort((a, b) => a.dueDate - b.dueDate);
+      
       return tasks;
     }
 
@@ -891,10 +966,14 @@
     }
 
     function filterTasks(filter) {
+      // Remove active class from all buttons
       const buttons = document.querySelectorAll('.task-filter-btn');
       buttons.forEach(btn => btn.classList.remove('active'));
+      
+      // Add active class to clicked button
       event.target.classList.add('active');
 
+      // Show/hide tasks based on filter
       const tasks = document.querySelectorAll('.task-item');
       tasks.forEach(task => {
         if (filter === 'all' || task.dataset.filter === filter) {
@@ -903,6 +982,22 @@
           task.style.display = 'none';
         }
       });
+    }
+
+    // Add these task action functions
+    function markTaskComplete(taskIdx) {
+      alert('Attività completata!');
+      // Here you could update the task status in your data structure
+    }
+
+    function postponeTask(taskIdx) {
+      alert('Attività posticipata di 3 giorni');
+      // Here you could update the due date
+    }
+
+    function skipTask(taskIdx) {
+      alert('Attività saltata');
+      // Here you could mark the task as skipped
     }
 
     function showDashboardTab(tab) {
@@ -1109,91 +1204,4 @@
                     </div>
                     <div class="task-priority ${task.priority}">${task.priority.toUpperCase()}</div>
                   </div>
-                  <div class="task-description">${task.description}</div>
-                  <div class="task-due-date ${task.status}">
-                    📅 Scadenza: ${task.dueDate.toLocaleDateString('it-IT')}
-                  </div>
-                  <div class="task-actions">
-                    <button class="task-btn complete" onclick="markTaskComplete(${idx})">Completa</button>
-                    <button class="task-btn postpone" onclick="postponeTask(${idx})">Posticipa</button>
-                    <button class="task-btn skip" onclick="skipTask(${idx})">Salta</button>
-                  </div>
-                </div>
-              `).join('')}
-          </div>
-        `;
-        document.getElementById('dashboardContent').innerHTML = html;
-      } else {
-        document.getElementById('dashboardContent').innerHTML = `<h2>${tab.charAt(0).toUpperCase() + tab.slice(1)} (Presto disponibile)</h2>`;
-      }
-    }
-
-    function showAddPlantWireframe() {
-      document.getElementById('addPlantWireframe').style.display = 'block';
-      document.getElementById('projectDashboard').classList.add('hidden');
-      document.getElementById('plantTypeWire').value = '';
-      document.getElementById('plantVarietyWire').value = '';
-      document.getElementById('plantQuantityWire').value = '';
-      document.getElementById('plantDateWire').value = '';
-      document.getElementById('plantNotesWire').value = '';
-    }
-
-    function cancelAddPlantWire() {
-      document.getElementById('addPlantWireframe').style.display = 'none';
-      document.getElementById('projectDashboard').classList.remove('hidden');
-      showDashboardTab('plants');
-    }
-
-    function fillPlantForm(nome, varieta) {
-      document.getElementById('plantTypeWire').value = nome;
-      document.getElementById('plantVarietyWire').value = varieta;
-    }
-
-    function saveWirePlant() {
-      const type = document.getElementById('plantTypeWire').value.trim();
-      const variety = document.getElementById('plantVarietyWire').value.trim();
-      const quantity = parseInt(document.getElementById('plantQuantityWire').value);
-      const date = document.getElementById('plantDateWire').value;
-      const notes = document.getElementById('plantNotesWire').value.trim();
-      if (!type || !quantity || !date) {
-        alert('Compila tutti i campi obbligatori.');
-        return;
-      }
-      plantLists[currentProjectIdx].push({
-        type: type + (variety ? ' (' + variety + ')' : ''),
-        quantity,
-        date,
-        notes
-      });
-      document.getElementById('addPlantWireframe').style.display = 'none';
-      document.getElementById('projectDashboard').classList.remove('hidden');
-      showDashboardTab('plants');
-    }
-
-    // EDIT SPECS LOGIC
-    function showSpecsEdit(event) {
-      if(event) { event.preventDefault(); event.stopPropagation(); }
-      const proj = projects[currentProjectIdx];
-      if (!proj) {
-        alert("Nessun progetto selezionato.");
-        return;
-      }
-      showScreen('editSpecsForm');
-      document.getElementById('editProjType').value = proj.type || "";
-      document.getElementById('editProjSize').value = proj.size || "";
-
-      Array.from(document.querySelectorAll('input[name="editSoil"]')).forEach(cb => {
-        cb.checked = (proj.soilConditions || []).includes(cb.value);
-      });
-      Array.from(document.querySelectorAll('input[name="editSun"]')).forEach(cb => {
-        cb.checked = (proj.sunExposure || []).includes(cb.value);
-      });
-      Array.from(document.querySelectorAll('input[name="editEnv"]')).forEach(cb => {
-        cb.checked = (proj.environment || []).includes(cb.value);
-      });
-    }
-    function saveSpecsEdit() {
-      const proj = projects[currentProjectIdx];
-      proj.type = document.getElementById('editProjType').value;
-      proj.size = document.getElementById('editProjSize').value;
-      proj.soilConditions = Array.from(document.querySelectorAll
+                  <div class="task-description">${task.
