@@ -60,7 +60,6 @@
     .plant-list { margin: 0; padding: 0; list-style: none; }
     .plant-list li { padding: 0.6rem 0; border-bottom: 1px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center; }
     .plant-list li:last-child { border-bottom: none; }
-    /* FIXED DASHBOARD NAV FOR MOBILE */
     .dashboard-nav {
       margin: 1.5rem 0 1rem 0;
       display: flex;
@@ -142,10 +141,34 @@
     #addPlantWireframe { max-width: 500px; margin: 2rem auto; background: #fff; border-radius: 12px; box-shadow: 0 0 16px rgba(0,0,0,0.07); padding: 2rem; display: none;}
     #addPlantWireframe label {margin-top: 1rem;}
     #addPlantWireframe input, #addPlantWireframe textarea {margin-bottom: 1rem;}
-    .plant-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
+    /* Responsive Table Container for Mobile */
+    .responsive-table-container {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 1.5rem;
+    }
+    .plant-table {
+      width: 100%;
+      min-width: 600px;
+      font-size: 0.97em;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
     .plant-table th, .plant-table td { border: 1px solid #e0e0e0; padding: 8px 4px; text-align: left; }
     .plant-table th { background: #e8f5e9; color: #388e3c; }
     .plant-table tr:nth-child(even) { background: #f9f9f9; }
+    @media (max-width: 700px) {
+      .plant-table th, .plant-table td {
+        padding: 0.4em 0.3em;
+        font-size: 0.92em;
+      }
+      .plant-table {
+        min-width: 520px;
+        font-size: 0.92em;
+      }
+    }
     #editSpecsForm { max-width: 500px; margin: 2rem auto; background: #fff; border-radius: 12px; box-shadow: 0 0 16px rgba(0,0,0,0.07); padding: 2rem; display: none;}
     #editSpecsForm label {margin-top: 1rem;}
     #editSpecsForm input, #editSpecsForm select {margin-bottom: 1rem;}
@@ -624,6 +647,7 @@
       } else if (tab === 'plants') {
         html = `
           <h2>Le tue piante</h2>
+          <div class="responsive-table-container">
           ${plants.length === 0 ? '<p>Nessuna pianta ancora.</p>' : `
             <table class="plant-table">
               <thead>
@@ -659,6 +683,7 @@
               </tbody>
             </table>
           `}
+          </div>
           <button class="btn-primary" style="margin-top:1.5rem;" onclick="showAddPlantWireframe()">Aggiungi pianta</button>
         `;
         document.getElementById('dashboardContent').innerHTML = html;
