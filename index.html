@@ -227,193 +227,6 @@
         font-size: 0.92em;
       }
     }
-    /* Task List Styles */
-    .task-filters {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .task-filter-btn {
-      background: #f0f0f0;
-      border: 1px solid #ddd;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: all 0.2s;
-    }
-    .task-filter-btn.active {
-      background: #4caf50;
-      color: white;
-      border-color: #4caf50;
-    }
-    .task-filter-btn:hover {
-      background: #e8f5e9;
-    }
-    .task-filter-btn.active:hover {
-      background: #388e3c;
-    }
-
-    .task-list {
-      margin-top: 1rem;
-    }
-    .task-item {
-      background: #fff;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 0.8rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-      position: relative;
-    }
-    .task-item.overdue {
-      border-left: 4px solid #f44336;
-      background: #ffebee;
-    }
-    .task-item.due-today {
-      border-left: 4px solid #ff9800;
-      background: #fff3e0;
-    }
-    .task-item.upcoming {
-      border-left: 4px solid #4caf50;
-      background: #f1f8e9;
-    }
-    .task-item.completed {
-      border-left: 4px solid #9e9e9e;
-      background: #f5f5f5;
-      opacity: 0.7;
-    }
-
-    .task-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 0.5rem;
-    }
-    .task-title {
-      font-weight: bold;
-      color: #333;
-      font-size: 1.1rem;
-    }
-    .task-priority {
-      font-size: 0.8rem;
-      padding: 0.2rem 0.5rem;
-      border-radius: 12px;
-      color: white;
-      font-weight: bold;
-    }
-    .task-priority.high { background: #f44336; }
-    .task-priority.medium { background: #ff9800; }
-    .task-priority.low { background: #4caf50; }
-
-    .task-plant {
-      color: #388e3c;
-      font-weight: bold;
-      font-size: 0.9rem;
-      margin-bottom: 0.3rem;
-    }
-    .task-description {
-      color: #666;
-      font-size: 0.9rem;
-      margin-bottom: 0.5rem;
-    }
-    .task-due-date {
-      color: #888;
-      font-size: 0.85rem;
-      margin-bottom: 0.5rem;
-    }
-    .task-due-date.overdue { color: #f44336; font-weight: bold; }
-    .task-due-date.due-today { color: #ff9800; font-weight: bold; }
-
-    .task-actions {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-    .task-btn {
-      padding: 0.3rem 0.8rem;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      transition: background 0.2s;
-    }
-    .task-btn.complete {
-      background: #4caf50;
-      color: white;
-    }
-    .task-btn.complete:hover {
-      background: #388e3c;
-    }
-    .task-btn.postpone {
-      background: #ff9800;
-      color: white;
-    }
-    .task-btn.postpone:hover {
-      background: #f57c00;
-    }
-    .task-btn.skip {
-      background: #9e9e9e;
-      color: white;
-    }
-    .task-btn.skip:hover {
-      background: #757575;
-    }
-
-    .task-stats {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .task-stat {
-      background: #f4f9f4;
-      border-radius: 8px;
-      padding: 0.8rem 1rem;
-      text-align: center;
-      min-width: 80px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    .task-stat-number {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #388e3c;
-    }
-    .task-stat-label {
-      font-size: 0.8rem;
-      color: #666;
-      margin-top: 0.2rem;
-    }
-
-    .no-tasks {
-      text-align: center;
-      color: #888;
-      font-style: italic;
-      padding: 2rem;
-    }
-
-    @media (max-width: 700px) {
-      .task-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .task-priority {
-        margin-top: 0.3rem;
-      }
-      .task-actions {
-        flex-wrap: wrap;
-      }
-      .task-stats {
-        gap: 0.5rem;
-      }
-      .task-stat {
-        min-width: 70px;
-        padding: 0.6rem 0.8rem;
-      }
-    }
     #editSpecsForm { max-width: 500px; margin: 2rem auto; background: #fff; border-radius: 12px; box-shadow: 0 0 16px rgba(0,0,0,0.07); padding: 2rem; display: none;}
     #editSpecsForm label {margin-top: 1rem;}
     #editSpecsForm input, #editSpecsForm select {margin-bottom: 1rem;}
@@ -827,130 +640,55 @@
       showDashboardTab('overview');
     }
 
-    // IMPROVED TASK GENERATION FOR TOMATOES
+    // Generate tasks for all plants
     function generateTasksForPlants(plants) {
       const tasks = [];
       const today = new Date();
 
-      plants.forEach((plant, plantIdx) => {
+      plants.forEach(plant => {
         if (!plant.type) return;
         
-        const plantName = plant.type.split(' (')[0].toLowerCase();
-        const plantingDate = new Date(plant.date);
-        
-        // TOMATO-SPECIFIC TASKS
-        if (plantName.includes('pomodoro')) {
-          // 1. Add fertiliser when planting (should be done on planting date)
-          const fertilizerDate = new Date(plantingDate);
-          const daysSincePlanting = Math.floor((today - fertilizerDate) / (1000 * 60 * 60 * 24));
-          
-          tasks.push({
-            plantName: plant.type,
-            title: 'Aggiungere fertilizzante',
-            description: 'Aggiungere fertilizzante durante la semina',
-            dueDate: fertilizerDate,
-            priority: daysSincePlanting > 0 ? 'high' : 'medium',
-            status: daysSincePlanting > 0 ? 'overdue' : (daysSincePlanting === 0 ? 'due-today' : 'upcoming'),
-            plantIdx: plantIdx
-          });
-
-          // 2. Use corroborant on the plant, repeat every 15 days
-          let corroborantDate = new Date(plantingDate);
-          corroborantDate.setDate(corroborantDate.getDate() + 7); // Start 7 days after planting
-          
-          for (let i = 0; i < 6; i++) { // Generate 6 corroborant treatments
-            const treatmentDate = new Date(corroborantDate);
-            treatmentDate.setDate(treatmentDate.getDate() + (i * 15));
-            
-            const daysUntilTreatment = Math.floor((treatmentDate - today) / (1000 * 60 * 60 * 24));
-            
-            let status = 'upcoming';
-            let priority = 'medium';
-            
-            if (daysUntilTreatment < 0) {
-              status = 'overdue';
-              priority = 'high';
-            } else if (daysUntilTreatment === 0) {
-              status = 'due-today';
-              priority = 'high';
-            }
-            
-            tasks.push({
-              plantName: plant.type,
-              title: 'Applicare corroborante',
-              description: `Trattamento corroborante #${i + 1} (ogni 15 giorni)`,
-              dueDate: treatmentDate,
-              priority: priority,
-              status: status,
-              plantIdx: plantIdx
-            });
-          }
-
-          // 3. Harvest after 2 months
-          const harvestDate = new Date(plantingDate);
-          harvestDate.setMonth(harvestDate.getMonth() + 2);
-          
-          const daysUntilHarvest = Math.floor((harvestDate - today) / (1000 * 60 * 60 * 24));
-          
-          let harvestStatus = 'upcoming';
-          let harvestPriority = 'low';
-          
-          if (daysUntilHarvest < 0) {
-            harvestStatus = 'overdue';
-            harvestPriority = 'high';
-          } else if (daysUntilHarvest === 0) {
-            harvestStatus = 'due-today';
-            harvestPriority = 'high';
-          } else if (daysUntilHarvest <= 7) {
-            harvestPriority = 'medium';
-          }
-          
-          tasks.push({
-            plantName: plant.type,
-            title: 'Raccolta',
-            description: 'Raccogliere i pomodori maturi (dopo 2 mesi dalla semina)',
-            dueDate: harvestDate,
-            priority: harvestPriority,
-            status: harvestStatus,
-            plantIdx: plantIdx
-          });
-        }
-        
-        // GENERIC TASKS FOR ALL PLANTS
-        // Weekly watering
-        const nextWatering = new Date(today);
-        nextWatering.setDate(nextWatering.getDate() + 1);
-        
+        // Watering task
         tasks.push({
           plantName: plant.type,
           title: 'Innaffiare',
-          description: 'Innaffiatura regolare',
-          dueDate: nextWatering,
+          description: 'Innaffiare secondo la cadenza',
+          dueDate: new Date(today.getTime() + 1 * 24 * 60 * 60 * 1000), // tomorrow
           priority: 'medium',
-          status: 'upcoming',
-          plantIdx: plantIdx
+          status: 'upcoming'
         });
 
-        // Monthly weeding
-        const nextWeeding = new Date(plantingDate);
-        nextWeeding.setDate(nextWeeding.getDate() + 30);
-        
-        const daysUntilWeeding = Math.floor((nextWeeding - today) / (1000 * 60 * 60 * 24));
-        
+        // De-weeding task
         tasks.push({
           plantName: plant.type,
           title: 'Diserbo',
-          description: 'Rimuovere le erbacce intorno alla pianta',
-          dueDate: nextWeeding,
-          priority: daysUntilWeeding < 0 ? 'high' : 'low',
-          status: daysUntilWeeding < 0 ? 'overdue' : (daysUntilWeeding === 0 ? 'due-today' : 'upcoming'),
-          plantIdx: plantIdx
+          description: 'Rimuovere le erbacce',
+          dueDate: new Date(today.getTime() - 1 * 24 * 60 * 60 * 1000), // yesterday
+          priority: 'high',
+          status: 'overdue'
+        });
+
+        // Bio fertiliser task
+        tasks.push({
+          plantName: plant.type,
+          title: 'Concimazione biologica',
+          description: 'Aggiungere fertilizzante biologico',
+          dueDate: new Date(today.getTime()), // today
+          priority: 'low',
+          status: 'due-today'
+        });
+
+        // Harvest task
+        tasks.push({
+          plantName: plant.type,
+          title: 'Raccolta',
+          description: 'Raccogliere i frutti',
+          dueDate: new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000), // in 7 days
+          priority: 'medium',
+          status: 'upcoming'
         });
       });
 
-      // Sort tasks by due date
-      tasks.sort((a, b) => a.dueDate - b.dueDate);
-      
       return tasks;
     }
 
@@ -978,22 +716,6 @@
           task.style.display = 'none';
         }
       });
-    }
-
-    // Add these task action functions
-    function markTaskComplete(taskIdx) {
-      alert('Attività completata!');
-      // Here you could update the task status in your data structure
-    }
-
-    function postponeTask(taskIdx) {
-      alert('Attività posticipata di 3 giorni');
-      // Here you could update the due date
-    }
-
-    function skipTask(taskIdx) {
-      alert('Attività saltata');
-      // Here you could mark the task as skipped
     }
 
     function showDashboardTab(tab) {
@@ -1201,3 +923,145 @@
                     <div class="task-priority ${task.priority}">${task.priority.toUpperCase()}</div>
                   </div>
                   <div class="task-description">${task.description}</div>
+                  <div class="task-due-date ${task.status}">
+                    📅 Scadenza: ${task.dueDate.toLocaleDateString('it-IT')}
+                  </div>
+                  <div class="task-actions">
+                    <button class="task-btn complete" onclick="markTaskComplete(${idx})">Completa</button>
+                    <button class="task-btn postpone" onclick="postponeTask(${idx})">Posticipa</button>
+                    <button class="task-btn skip" onclick="skipTask(${idx})">Salta</button>
+                  </div>
+                </div>
+              `).join('')}
+          </div>
+        `;
+        document.getElementById('dashboardContent').innerHTML = html;
+      } else {
+        document.getElementById('dashboardContent').innerHTML = `<h2>${tab.charAt(0).toUpperCase() + tab.slice(1)} (Presto disponibile)</h2>`;
+      }
+    }
+
+    function showAddPlantWireframe() {
+      document.getElementById('addPlantWireframe').style.display = 'block';
+      document.getElementById('projectDashboard').classList.add('hidden');
+      document.getElementById('plantTypeWire').value = '';
+      document.getElementById('plantVarietyWire').value = '';
+      document.getElementById('plantQuantityWire').value = '';
+      document.getElementById('plantDateWire').value = '';
+      document.getElementById('plantNotesWire').value = '';
+    }
+
+    function cancelAddPlantWire() {
+      document.getElementById('addPlantWireframe').style.display = 'none';
+      document.getElementById('projectDashboard').classList.remove('hidden');
+      showDashboardTab('plants');
+    }
+
+    function fillPlantForm(nome, varieta) {
+      document.getElementById('plantTypeWire').value = nome;
+      document.getElementById('plantVarietyWire').value = varieta;
+    }
+
+    function saveWirePlant() {
+      const type = document.getElementById('plantTypeWire').value.trim();
+      const variety = document.getElementById('plantVarietyWire').value.trim();
+      const quantity = parseInt(document.getElementById('plantQuantityWire').value);
+      const date = document.getElementById('plantDateWire').value;
+      const notes = document.getElementById('plantNotesWire').value.trim();
+      if (!type || !quantity || !date) {
+        alert('Compila tutti i campi obbligatori.');
+        return;
+      }
+      plantLists[currentProjectIdx].push({
+        type: type + (variety ? ' (' + variety + ')' : ''),
+        quantity,
+        date,
+        notes
+      });
+      document.getElementById('addPlantWireframe').style.display = 'none';
+      document.getElementById('projectDashboard').classList.remove('hidden');
+      showDashboardTab('plants');
+    }
+
+    // EDIT SPECS LOGIC
+    function showSpecsEdit(event) {
+      if(event) { event.preventDefault(); event.stopPropagation(); }
+      const proj = projects[currentProjectIdx];
+      if (!proj) {
+        alert("Nessun progetto selezionato.");
+        return;
+      }
+      showScreen('editSpecsForm');
+      document.getElementById('editProjType').value = proj.type || "";
+      document.getElementById('editProjSize').value = proj.size || "";
+
+      Array.from(document.querySelectorAll('input[name="editSoil"]')).forEach(cb => {
+        cb.checked = (proj.soilConditions || []).includes(cb.value);
+      });
+      Array.from(document.querySelectorAll('input[name="editSun"]')).forEach(cb => {
+        cb.checked = (proj.sunExposure || []).includes(cb.value);
+      });
+      Array.from(document.querySelectorAll('input[name="editEnv"]')).forEach(cb => {
+        cb.checked = (proj.environment || []).includes(cb.value);
+      });
+    }
+    function saveSpecsEdit() {
+      const proj = projects[currentProjectIdx];
+      proj.type = document.getElementById('editProjType').value;
+      proj.size = document.getElementById('editProjSize').value;
+      proj.soilConditions = Array.from(document.querySelectorAll('input[name="editSoil"]:checked')).map(cb => cb.value);
+      proj.sunExposure = Array.from(document.querySelectorAll('input[name="editSun"]:checked')).map(cb => cb.value);
+      proj.environment = Array.from(document.querySelectorAll('input[name="editEnv"]:checked')).map(cb => cb.value);
+      showScreen('projectDashboard');
+      showDashboardTab('overview');
+    }
+    function cancelSpecsEdit() {
+      showScreen('projectDashboard');
+      showDashboardTab('overview');
+    }
+
+    // --- Trattamenti Speciali per pianta ---
+    function openTrattamentoPopup(plantIdx) {
+      currentPlantIdxForTrattamento = plantIdx;
+      document.getElementById('trattamentoNome').value = '';
+      document.getElementById('trattamentoCadence').value = '';
+      document.getElementById('trattamentoData').value = '';
+      document.getElementById('trattamentoNote').value = '';
+      document.getElementById('trattamentoPopup').style.display = 'flex';
+    }
+    function closeTrattamentoPopup() {
+      document.getElementById('trattamentoPopup').style.display = 'none';
+      currentPlantIdxForTrattamento = null;
+    }
+    function saveTrattamento() {
+      const nome = document.getElementById('trattamentoNome').value.trim();
+      const cadence = document.getElementById('trattamentoCadence').value.trim();
+      const data = document.getElementById('trattamentoData').value;
+      const note = document.getElementById('trattamentoNote').value.trim();
+      if (!nome || !cadence || !data) {
+        alert('Compila nome, cadenza e data trattamento.');
+        return;
+      }
+      const plant = plantLists[currentProjectIdx][currentPlantIdxForTrattamento];
+      if (!plant.trattamenti) plant.trattamenti = [];
+      plant.trattamenti.push({ nome, cadence, data, note });
+      closeTrattamentoPopup();
+      showDashboardTab('plants');
+    }
+
+    function markTaskComplete(taskIdx) {
+      alert('Attività completata!');
+    }
+
+    function postponeTask(taskIdx) {
+      alert('Attività posticipata di 3 giorni');
+    }
+
+    function skipTask(taskIdx) {
+      alert('Attività saltata');
+    }
+
+    showScreen('onboardingForm');
+  </script>
+</body>
+</html>
