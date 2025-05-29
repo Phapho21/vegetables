@@ -720,29 +720,14 @@
       }
     }
 
-    // FIXED ONBOARDING FORM SUBMISSION
     document.getElementById('onboardingForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      
-      // Validate all fields are filled
-      const experience = document.getElementById('experience').value;
-      const timeAmount = document.getElementById('timeAmount').value;
-      const timeUnit = document.getElementById('timeUnit').value;
-      const goal = document.getElementById('goal').value;
-      const tips = document.getElementById('tips').value;
-      
-      if (!experience || !timeAmount || !timeUnit || !goal || !tips) {
-        alert('Per favore compila tutti i campi obbligatori.');
-        return;
-      }
-      
       userProfile = {
-        experience: experience,
-        timeCommitment: timeAmount + ' ' + timeUnit,
-        primaryGoal: goal,
-        seasonalTips: tips
+        experience: document.getElementById('experience').value,
+        timeCommitment: document.getElementById('timeAmount').value + ' ' + document.getElementById('timeUnit').value,
+        primaryGoal: document.getElementById('goal').value,
+        seasonalTips: document.getElementById('tips').value
       };
-      
       showScreen('homepage');
       renderProjectArea();
     });
@@ -981,14 +966,10 @@
     }
 
     function filterTasks(filter) {
-      // Remove active class from all buttons
       const buttons = document.querySelectorAll('.task-filter-btn');
       buttons.forEach(btn => btn.classList.remove('active'));
-      
-      // Add active class to clicked button
       event.target.classList.add('active');
 
-      // Show/hide tasks based on filter
       const tasks = document.querySelectorAll('.task-item');
       tasks.forEach(task => {
         if (filter === 'all' || task.dataset.filter === filter) {
@@ -1209,4 +1190,14 @@
 
           <!-- Task List -->
           <div class="task-list" id="taskList">
-            ${allTasks.length === 0 ? '<div class="no-tasks">Nessuna attività programmata. Aggiungi delle piante per vedere
+            ${allTasks.length === 0 ? '<div class="no-tasks">Nessuna attività programmata. Aggiungi delle piante per vedere le attività!</div>' : 
+              allTasks.map((task, idx) => `
+                <div class="task-item ${task.status}" data-filter="${task.status}">
+                  <div class="task-header">
+                    <div>
+                      <div class="task-title">${task.title}</div>
+                      <div class="task-plant">🌱 ${task.plantName}</div>
+                    </div>
+                    <div class="task-priority ${task.priority}">${task.priority.toUpperCase()}</div>
+                  </div>
+                  <div class="task-description">${task.description}</div>
