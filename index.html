@@ -227,6 +227,157 @@
         font-size: 0.92em;
       }
     }
+    
+    /* NEW: Task Category Styles */
+    .task-category {
+      margin-bottom: 2.5rem;
+      text-align: left;
+    }
+    .task-category-header {
+      font-size: 1.15rem;
+      font-weight: bold;
+      color: #388e3c;
+      margin-bottom: 0.8rem;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+    .task-category-header .icon {
+      font-size: 1.3em;
+      margin-right: 0.3em;
+    }
+    .task-item {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 0.8rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      position: relative;
+      transition: box-shadow 0.2s;
+    }
+    .task-item:hover {
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .task-item.overdue {
+      border-left: 4px solid #f44336;
+      background: #ffebee;
+    }
+    .task-item.due-today {
+      border-left: 4px solid #ff9800;
+      background: #fff3e0;
+    }
+    .task-item.upcoming {
+      border-left: 4px solid #4caf50;
+      background: #f1f8e9;
+    }
+    .task-item.completed {
+      border-left: 4px solid #9e9e9e;
+      background: #f5f5f5;
+      opacity: 0.7;
+    }
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.4rem;
+    }
+    .task-title {
+      font-weight: bold;
+      color: #333;
+      font-size: 1.08rem;
+      margin-bottom: 0.2rem;
+    }
+    .task-priority {
+      font-size: 0.8rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 12px;
+      color: white;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .task-priority.high { background: #f44336; }
+    .task-priority.medium { background: #ff9800; }
+    .task-priority.low { background: #4caf50; }
+    .task-plant {
+      color: #388e3c;
+      font-weight: bold;
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
+    }
+    .task-description {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+    .task-due-date {
+      color: #888;
+      font-size: 0.85rem;
+      margin-bottom: 0.6rem;
+    }
+    .task-due-date.overdue { color: #f44336; font-weight: bold; }
+    .task-due-date.due-today { color: #ff9800; font-weight: bold; }
+    .task-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.6rem;
+    }
+    .task-btn {
+      padding: 0.3rem 0.8rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    .task-btn.complete {
+      background: #4caf50;
+      color: white;
+    }
+    .task-btn.complete:hover {
+      background: #388e3c;
+    }
+    .task-btn.postpone {
+      background: #ff9800;
+      color: white;
+    }
+    .task-btn.postpone:hover {
+      background: #f57c00;
+    }
+    .task-btn.skip {
+      background: #9e9e9e;
+      color: white;
+    }
+    .task-btn.skip:hover {
+      background: #757575;
+    }
+    .no-tasks {
+      text-align: center;
+      color: #888;
+      font-style: italic;
+      padding: 2rem;
+      background: #f9f9f9;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+    }
+    @media (max-width: 700px) {
+      .task-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .task-priority {
+        margin-top: 0.3rem;
+      }
+      .task-actions {
+        flex-wrap: wrap;
+      }
+    }
+    
     #editSpecsForm { max-width: 500px; margin: 2rem auto; background: #fff; border-radius: 12px; box-shadow: 0 0 16px rgba(0,0,0,0.07); padding: 2rem; display: none;}
     #editSpecsForm label {margin-top: 1rem;}
     #editSpecsForm input, #editSpecsForm select {margin-bottom: 1rem;}
@@ -640,7 +791,7 @@
       showDashboardTab('overview');
     }
 
-    // Generate tasks for all plants
+    // UPDATED: Generate tasks for all plants with vegetable categories
     function generateTasksForPlants(plants) {
       const tasks = [];
       const today = new Date();
@@ -648,45 +799,137 @@
       plants.forEach(plant => {
         if (!plant.type) return;
         
-        // Watering task
-        tasks.push({
-          plantName: plant.type,
-          title: 'Innaffiare',
-          description: 'Innaffiare secondo la cadenza',
-          dueDate: new Date(today.getTime() + 1 * 24 * 60 * 60 * 1000), // tomorrow
-          priority: 'medium',
-          status: 'upcoming'
-        });
-
-        // De-weeding task
-        tasks.push({
-          plantName: plant.type,
-          title: 'Diserbo',
-          description: 'Rimuovere le erbacce',
-          dueDate: new Date(today.getTime() - 1 * 24 * 60 * 60 * 1000), // yesterday
-          priority: 'high',
-          status: 'overdue'
-        });
-
-        // Bio fertiliser task
-        tasks.push({
-          plantName: plant.type,
-          title: 'Concimazione biologica',
-          description: 'Aggiungere fertilizzante biologico',
-          dueDate: new Date(today.getTime()), // today
-          priority: 'low',
-          status: 'due-today'
-        });
-
-        // Harvest task
-        tasks.push({
-          plantName: plant.type,
-          title: 'Raccolta',
-          description: 'Raccogliere i frutti',
-          dueDate: new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000), // in 7 days
-          priority: 'medium',
-          status: 'upcoming'
-        });
+        const plantName = plant.type.toLowerCase();
+        
+        // TOMATO TASKS
+        if (plantName.includes('pomodoro')) {
+          tasks.push({
+            plantName: plant.type,
+            title: 'Innaffiare',
+            description: 'Innaffiare regolarmente, evitando le foglie',
+            dueDate: new Date(today.getTime() + 1 * 24 * 60 * 60 * 1000),
+            priority: 'high',
+            status: 'upcoming',
+            category: 'Pomodori',
+            icon: '🍅'
+          });
+          tasks.push({
+            plantName: plant.type,
+            title: 'Potatura',
+            description: 'Rimuovere i germogli laterali',
+            dueDate: new Date(today.getTime() - 1 * 24 * 60 * 60 * 1000),
+            priority: 'medium',
+            status: 'overdue',
+            category: 'Pomodori',
+            icon: '🍅'
+          });
+          tasks.push({
+            plantName: plant.type,
+            title: 'Concimazione',
+            description: 'Aggiungere fertilizzante ricco di potassio',
+            dueDate: new Date(today.getTime()),
+            priority: 'medium',
+            status: 'due-today',
+            category: 'Pomodori',
+            icon: '🍅'
+          });
+        }
+        
+        // LEAFY GREENS TASKS
+        else if (plantName.includes('lattuga') || plantName.includes('spinaci') || plantName.includes('rucola')) {
+          tasks.push({
+            plantName: plant.type,
+            title: 'Innaffiare',
+            description: 'Mantenere il terreno umido ma non bagnato',
+            dueDate: new Date(today.getTime() + 1 * 24 * 60 * 60 * 1000),
+            priority: 'medium',
+            status: 'upcoming',
+            category: 'Verdure a Foglia',
+            icon: '🥬'
+          });
+          tasks.push({
+            plantName: plant.type,
+            title: 'Raccolta',
+            description: 'Raccogliere le foglie esterne',
+            dueDate: new Date(today.getTime() + 3 * 24 * 60 * 60 * 1000),
+            priority: 'low',
+            status: 'upcoming',
+            category: 'Verdure a Foglia',
+            icon: '🥬'
+          });
+        }
+        
+        // ROOT VEGETABLES TASKS
+        else if (plantName.includes('carota') || plantName.includes('ravanello') || plantName.includes('barbabietola')) {
+          tasks.push({
+            plantName: plant.type,
+            title: 'Diradamento',
+            description: 'Diradare le piantine per dare spazio',
+            dueDate: new Date(today.getTime() - 2 * 24 * 60 * 60 * 1000),
+            priority: 'high',
+            status: 'overdue',
+            category: 'Ortaggi da Radice',
+            icon: '🥕'
+          });
+          tasks.push({
+            plantName: plant.type,
+            title: 'Innaffiare',
+            description: 'Innaffiare delicatamente per non disturbare le radici',
+            dueDate: new Date(today.getTime() + 1 * 24 * 60 * 60 * 1000),
+            priority: 'medium',
+            status: 'upcoming',
+            category: 'Ortaggi da Radice',
+            icon: '🥕'
+          });
+        }
+        
+        // HERBS TASKS
+        else if (plantName.includes('basilico') || plantName.includes('prezzemolo') || plantName.includes('rosmarino')) {
+          tasks.push({
+            plantName: plant.type,
+            title: 'Potatura',
+            description: 'Pizzicare i fiori per mantenere il sapore',
+            dueDate: new Date(today.getTime()),
+            priority: 'low',
+            status: 'due-today',
+            category: 'Erbe Aromatiche',
+            icon: '🌿'
+          });
+          tasks.push({
+            plantName: plant.type,
+            title: 'Raccolta',
+            description: 'Raccogliere le foglie fresche',
+            dueDate: new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000),
+            priority: 'low',
+            status: 'upcoming',
+            category: 'Erbe Aromatiche',
+            icon: '🌿'
+          });
+        }
+        
+        // DEFAULT VEGETABLE TASKS
+        else {
+          tasks.push({
+            plantName: plant.type,
+            title: 'Innaffiare',
+            description: 'Innaffiare secondo la cadenza',
+            dueDate: new Date(today.getTime() + 1 * 24 * 60 * 60 * 1000),
+            priority: 'medium',
+            status: 'upcoming',
+            category: 'Altri Ortaggi',
+            icon: '🥒'
+          });
+          tasks.push({
+            plantName: plant.type,
+            title: 'Controllo parassiti',
+            description: 'Controllare per parassiti e malattie',
+            dueDate: new Date(today.getTime() + 3 * 24 * 60 * 60 * 1000),
+            priority: 'low',
+            status: 'upcoming',
+            category: 'Altri Ortaggi',
+            icon: '🥒'
+          });
+        }
       });
 
       return tasks;
@@ -874,67 +1117,62 @@
           }
         }
       } else if (tab === 'tasks') {
-        // Generate tasks for all plants
+        // NEW VEGETABLE CATEGORY LAYOUT
         const allTasks = generateTasksForPlants(plants);
-        const taskStats = calculateTaskStats(allTasks);
         
-        html = `
-          <h2>Attività</h2>
+        if (allTasks.length === 0) {
+          html = `
+            <h2>Attività</h2>
+            <div class="no-tasks">Nessuna attività programmata. Aggiungi delle piante per vedere le attività!</div>
+          `;
+        } else {
+          // Group tasks by vegetable category
+          const categories = {};
+          allTasks.forEach(task => {
+            if (!categories[task.category]) {
+              categories[task.category] = [];
+            }
+            categories[task.category].push(task);
+          });
+
+          html = `<h2>Attività per Categoria</h2>`;
           
-          <!-- Task Statistics -->
-          <div class="task-stats">
-            <div class="task-stat">
-              <div class="task-stat-number">${taskStats.overdue}</div>
-              <div class="task-stat-label">In ritardo</div>
-            </div>
-            <div class="task-stat">
-              <div class="task-stat-number">${taskStats.dueToday}</div>
-              <div class="task-stat-label">Oggi</div>
-            </div>
-            <div class="task-stat">
-              <div class="task-stat-number">${taskStats.upcoming}</div>
-              <div class="task-stat-label">Prossimi</div>
-            </div>
-            <div class="task-stat">
-              <div class="task-stat-number">${taskStats.completed}</div>
-              <div class="task-stat-label">Completati</div>
-            </div>
-          </div>
-
-          <!-- Task Filters -->
-          <div class="task-filters">
-            <button class="task-filter-btn active" onclick="filterTasks('all')">Tutte</button>
-            <button class="task-filter-btn" onclick="filterTasks('overdue')">In ritardo</button>
-            <button class="task-filter-btn" onclick="filterTasks('due-today')">Oggi</button>
-            <button class="task-filter-btn" onclick="filterTasks('upcoming')">Prossime</button>
-            <button class="task-filter-btn" onclick="filterTasks('completed')">Completate</button>
-          </div>
-
-          <!-- Task List -->
-          <div class="task-list" id="taskList">
-            ${allTasks.length === 0 ? '<div class="no-tasks">Nessuna attività programmata. Aggiungi delle piante per vedere le attività!</div>' : 
-              allTasks.map((task, idx) => `
-                <div class="task-item ${task.status}" data-filter="${task.status}">
-                  <div class="task-header">
-                    <div>
-                      <div class="task-title">${task.title}</div>
-                      <div class="task-plant">🌱 ${task.plantName}</div>
-                    </div>
-                    <div class="task-priority ${task.priority}">${task.priority.toUpperCase()}</div>
-                  </div>
-                  <div class="task-description">${task.description}</div>
-                  <div class="task-due-date ${task.status}">
-                    📅 Scadenza: ${task.dueDate.toLocaleDateString('it-IT')}
-                  </div>
-                  <div class="task-actions">
-                    <button class="task-btn complete" onclick="markTaskComplete(${idx})">Completa</button>
-                    <button class="task-btn postpone" onclick="postponeTask(${idx})">Posticipa</button>
-                    <button class="task-btn skip" onclick="skipTask(${idx})">Salta</button>
-                  </div>
+          // Render each vegetable category
+          Object.keys(categories).forEach(categoryName => {
+            const categoryTasks = categories[categoryName];
+            const categoryIcon = categoryTasks[0].icon || '🥬';
+            
+            html += `
+              <div class="task-category">
+                <div class="task-category-header">
+                  <span class="icon">${categoryIcon}</span>
+                  ${categoryName}
                 </div>
-              `).join('')}
-          </div>
-        `;
+                ${categoryTasks.map((task, idx) => `
+                  <div class="task-item ${task.status}" data-filter="${task.status}">
+                    <div class="task-header">
+                      <div>
+                        <div class="task-title">${task.title}</div>
+                        <div class="task-plant">🌱 ${task.plantName}</div>
+                      </div>
+                      <div class="task-priority ${task.priority}">${task.priority.toUpperCase()}</div>
+                    </div>
+                    <div class="task-description">${task.description}</div>
+                    <div class="task-due-date ${task.status}">
+                      📅 Scadenza: ${task.dueDate.toLocaleDateString('it-IT')}
+                    </div>
+                    <div class="task-actions">
+                      <button class="task-btn complete" onclick="markTaskComplete(${idx})">Completa</button>
+                      <button class="task-btn postpone" onclick="postponeTask(${idx})">Posticipa</button>
+                      <button class="task-btn skip" onclick="skipTask(${idx})">Salta</button>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            `;
+          });
+        }
+        
         document.getElementById('dashboardContent').innerHTML = html;
       } else {
         document.getElementById('dashboardContent').innerHTML = `<h2>${tab.charAt(0).toUpperCase() + tab.slice(1)} (Presto disponibile)</h2>`;
