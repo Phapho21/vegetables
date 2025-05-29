@@ -720,14 +720,29 @@
       }
     }
 
+    // FIXED ONBOARDING FORM SUBMISSION
     document.getElementById('onboardingForm').addEventListener('submit', function(e) {
       e.preventDefault();
+      
+      // Validate all fields are filled
+      const experience = document.getElementById('experience').value;
+      const timeAmount = document.getElementById('timeAmount').value;
+      const timeUnit = document.getElementById('timeUnit').value;
+      const goal = document.getElementById('goal').value;
+      const tips = document.getElementById('tips').value;
+      
+      if (!experience || !timeAmount || !timeUnit || !goal || !tips) {
+        alert('Per favore compila tutti i campi obbligatori.');
+        return;
+      }
+      
       userProfile = {
-        experience: document.getElementById('experience').value,
-        timeCommitment: document.getElementById('timeAmount').value + ' ' + document.getElementById('timeUnit').value,
-        primaryGoal: document.getElementById('goal').value,
-        seasonalTips: document.getElementById('tips').value
+        experience: experience,
+        timeCommitment: timeAmount + ' ' + timeUnit,
+        primaryGoal: goal,
+        seasonalTips: tips
       };
+      
       showScreen('homepage');
       renderProjectArea();
     });
@@ -1194,12 +1209,4 @@
 
           <!-- Task List -->
           <div class="task-list" id="taskList">
-            ${allTasks.length === 0 ? '<div class="no-tasks">Nessuna attività programmata. Aggiungi delle piante per vedere le attività!</div>' : 
-              allTasks.map((task, idx) => `
-                <div class="task-item ${task.status}" data-filter="${task.status}">
-                  <div class="task-header">
-                    <div>
-                      <div class="task-title">${task.title}</div>
-                      <div class="task-plant">🌱 ${task.plantName}</div>
-                    </div>
-                    <div class="task-priority ${task.priority}"
+            ${allTasks.length === 0 ? '<div class="no-tasks">Nessuna attività programmata. Aggiungi delle piante per vedere
