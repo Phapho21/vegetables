@@ -115,12 +115,13 @@
     .plant-card {
       border: 2px solid transparent;
       border-radius: 8px;
-      padding: 5px;
+      padding: 10px;
       text-align: center;
       background: #fff;
       box-shadow: 0 0 5px rgba(0,0,0,0.1);
       cursor: pointer;
       transition: border 0.2s;
+      position: relative;
     }
     .plant-card:hover {
       border: 2px solid #4caf50;
@@ -138,97 +139,31 @@
       margin-top: 8px;
       font-weight: bold;
     }
-    #addPlantWireframe { max-width: 500px; margin: 2rem auto; background: #fff; border-radius: 12px; box-shadow: 0 0 16px rgba(0,0,0,0.07); padding: 2rem; display: none;}
-    #addPlantWireframe label {margin-top: 1rem;}
-    #addPlantWireframe input, #addPlantWireframe textarea {margin-bottom: 1rem;}
-    .responsive-table-container {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      margin-bottom: 1.5rem;
+    
+    /* Smart Suggestions Styling */
+    .confidence-badge {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 0.7em;
+      font-weight: bold;
+      color: white;
     }
-    .plant-table {
-      width: 100%;
-      min-width: 600px;
-      font-size: 0.97em;
-      background: #fff;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .plant-table th, .plant-table td { border: 1px solid #e0e0e0; padding: 8px 4px; text-align: left; }
-    .plant-table th { background: #e8f5e9; color: #388e3c; }
-    .plant-table tr:nth-child(even) { background: #f9f9f9; }
-    /* CARD STYLE FOR PLANTS ON MOBILE */
-    .plant-cards-mobile { display: none; }
-    @media (max-width: 700px) {
-      .responsive-table-container { display: none !important; }
-      .plant-cards-mobile {
-        display: flex !important;
-        flex-direction: column;
-        gap: 1.2rem;
-        margin-bottom: 1.2rem;
-      }
-      .plant-card-mobile {
-        background: #f4f9f4;
-        border: 2px solid #e0e0e0;
-        border-radius: 10px;
-        box-shadow: 0 0 8px rgba(0,0,0,0.04);
-        padding: 1.1rem 1rem 0.7rem 1rem;
-        text-align: left;
-        position: relative;
-      }
-      .plant-card-mobile-row {
-        display: flex;
-        margin-bottom: 0.4em;
-      }
-      .plant-card-mobile-label {
-        min-width: 95px;
-        color: #388e3c;
-        font-weight: bold;
-        margin-right: 0.6em;
-        flex-shrink: 0;
-      }
-      .plant-card-mobile-value {
-        flex: 1;
-      }
-      .plant-card-mobile-trattamenti {
-        margin: 0.6em 0 0.4em 0;
-        padding: 0.7em 0.8em;
-        background: #fff;
-        border-radius: 7px;
-        border: 1px solid #e0e0e0;
-      }
-      .plant-card-mobile-trattamenti-title {
-        font-weight: bold;
-        color: #388e3c;
-        margin-bottom: 0.2em;
-        font-size: 1.02em;
-      }
-      .plant-card-mobile-trattamenti-list {
-        margin: 0;
-        padding-left: 1.3em;
-        font-size: 0.97em;
-      }
-      .plant-card-mobile-trattamenti-list li {
-        margin-bottom: 0.2em;
-      }
-      .plant-card-mobile-cta {
-        text-align: right;
-        margin-top: 0.6em;
-      }
-    }
-    @media (max-width: 700px) {
-      .plant-table th, .plant-table td {
-        padding: 0.4em 0.3em;
-        font-size: 0.92em;
-      }
-      .plant-table {
-        min-width: 520px;
-        font-size: 0.92em;
-      }
+    .confidence-very-high { background: #4caf50; }
+    .confidence-high { background: #8bc34a; }
+    .confidence-medium { background: #ff9800; }
+    .confidence-low { background: #f44336; }
+    
+    .score-display {
+      font-size: 0.8em;
+      color: #388e3c;
+      font-weight: bold;
+      margin-top: 3px;
     }
     
-    /* Task Category Styles - TASK-BASED GROUPING */
+    /* Task Category Styles */
     .task-category {
       margin-bottom: 2.5rem;
       text-align: left;
@@ -378,6 +313,95 @@
       }
     }
     
+    #addPlantWireframe { max-width: 500px; margin: 2rem auto; background: #fff; border-radius: 12px; box-shadow: 0 0 16px rgba(0,0,0,0.07); padding: 2rem; display: none;}
+    #addPlantWireframe label {margin-top: 1rem;}
+    #addPlantWireframe input, #addPlantWireframe textarea {margin-bottom: 1rem;}
+    .responsive-table-container {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 1.5rem;
+    }
+    .plant-table {
+      width: 100%;
+      min-width: 600px;
+      font-size: 0.97em;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .plant-table th, .plant-table td { border: 1px solid #e0e0e0; padding: 8px 4px; text-align: left; }
+    .plant-table th { background: #e8f5e9; color: #388e3c; }
+    .plant-table tr:nth-child(even) { background: #f9f9f9; }
+    /* CARD STYLE FOR PLANTS ON MOBILE */
+    .plant-cards-mobile { display: none; }
+    @media (max-width: 700px) {
+      .responsive-table-container { display: none !important; }
+      .plant-cards-mobile {
+        display: flex !important;
+        flex-direction: column;
+        gap: 1.2rem;
+        margin-bottom: 1.2rem;
+      }
+      .plant-card-mobile {
+        background: #f4f9f4;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        box-shadow: 0 0 8px rgba(0,0,0,0.04);
+        padding: 1.1rem 1rem 0.7rem 1rem;
+        text-align: left;
+        position: relative;
+      }
+      .plant-card-mobile-row {
+        display: flex;
+        margin-bottom: 0.4em;
+      }
+      .plant-card-mobile-label {
+        min-width: 95px;
+        color: #388e3c;
+        font-weight: bold;
+        margin-right: 0.6em;
+        flex-shrink: 0;
+      }
+      .plant-card-mobile-value {
+        flex: 1;
+      }
+      .plant-card-mobile-trattamenti {
+        margin: 0.6em 0 0.4em 0;
+        padding: 0.7em 0.8em;
+        background: #fff;
+        border-radius: 7px;
+        border: 1px solid #e0e0e0;
+      }
+      .plant-card-mobile-trattamenti-title {
+        font-weight: bold;
+        color: #388e3c;
+        margin-bottom: 0.2em;
+        font-size: 1.02em;
+      }
+      .plant-card-mobile-trattamenti-list {
+        margin: 0;
+        padding-left: 1.3em;
+        font-size: 0.97em;
+      }
+      .plant-card-mobile-trattamenti-list li {
+        margin-bottom: 0.2em;
+      }
+      .plant-card-mobile-cta {
+        text-align: right;
+        margin-top: 0.6em;
+      }
+    }
+    @media (max-width: 700px) {
+      .plant-table th, .plant-table td {
+        padding: 0.4em 0.3em;
+        font-size: 0.92em;
+      }
+      .plant-table {
+        min-width: 520px;
+        font-size: 0.92em;
+      }
+    }
     #editSpecsForm { max-width: 500px; margin: 2rem auto; background: #fff; border-radius: 12px; box-shadow: 0 0 16px rgba(0,0,0,0.07); padding: 2rem; display: none;}
     #editSpecsForm label {margin-top: 1rem;}
     #editSpecsForm input, #editSpecsForm select {margin-bottom: 1rem;}
@@ -586,42 +610,13 @@
       </div>
     </form>
 
-    <!-- CREA LA TUA PIANTA - Wireframe con suggerimenti -->
+    <!-- CREA LA TUA PIANTA - Wireframe con suggerimenti SMART -->
     <div id="addPlantWireframe" style="display:none;">
       <h2 style="color: #388e3c; text-align: center; margin-bottom: 1.5rem;">Crea la tua pianta</h2>
       <div>
-        <h3 style="text-align:left;">Suggerimenti per il tuo terreno</h3>
-        <div class="suggested-plants-grid">
-          <div class="plant-card" onclick="fillPlantForm('Pomodoro', 'San Marzano')">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg" alt="Pomodoro" />
-            <div class="plant-card-name">Pomodoro</div>
-            <div style="font-size:0.9em;color:#388e3c;">San Marzano</div>
-          </div>
-          <div class="plant-card" onclick="fillPlantForm('Melanzana', 'Violetta lunga')">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Aubergine.jpg" alt="Melanzana" />
-            <div class="plant-card-name">Melanzana</div>
-            <div style="font-size:0.9em;color:#388e3c;">Violetta lunga</div>
-          </div>
-          <div class="plant-card" onclick="fillPlantForm('Zucchina', 'Genovese')">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Zucchini_and_flower.jpg" alt="Zucchina" />
-            <div class="plant-card-name">Zucchina</div>
-            <div style="font-size:0.9em;color:#388e3c;">Genovese</div>
-          </div>
-          <div class="plant-card" onclick="fillPlantForm('Peperone', 'Quadrato d\'Asti')">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/Red_and_green_bell_peppers.jpg" alt="Peperone" />
-            <div class="plant-card-name">Peperone</div>
-            <div style="font-size:0.9em;color:#388e3c;">Quadrato d'Asti</div>
-          </div>
-          <div class="plant-card" onclick="fillPlantForm('Fagiolo', 'Nano')">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/4/4b/Beans_in_pod.jpg" alt="Fagiolo" />
-            <div class="plant-card-name">Fagiolo</div>
-            <div style="font-size:0.9em;color:#388e3c;">Nano</div>
-          </div>
-          <div class="plant-card" onclick="fillPlantForm('Lattuga', 'Romana')">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Lettuce_01.jpg" alt="Lattuga" />
-            <div class="plant-card-name">Lattuga</div>
-            <div style="font-size:0.9em;color:#388e3c;">Romana</div>
-          </div>
+        <h3 style="text-align:left;">🎯 Suggerimenti personalizzati per le tue condizioni</h3>
+        <div class="suggested-plants-grid" id="smartSuggestionsGrid">
+          <!-- Smart suggestions will be populated here -->
         </div>
       </div>
       <form id="addPlantForm" style="margin-top:2rem;" onsubmit="event.preventDefault(); saveWirePlant();">
@@ -665,12 +660,323 @@
 
   </div>
   <script>
+    // === GLOBAL VARIABLES ===
     let userProfile = null;
     let projects = [];
     let currentProjectIdx = null;
     let plantLists = [];
     let currentPlantIdxForTrattamento = null;
+    let suggestionsEngine = null;
 
+    // === VEGETABLE DATABASE ===
+    const vegetableDatabase = {
+      "pomodoro": {
+        varieties: {
+          "San Marzano": {
+            requirements: {
+              sunHours: { min: 6, max: 8 },
+              soilTypes: ["Limoso", "Sabbioso"],
+              drainage: ["good", "excellent"],
+              irrigation: "required"
+            },
+            careProfile: {
+              difficulty: "intermedio",
+              timePerWeek: 45
+            },
+            growthInfo: {
+              plantingMonths: [3, 4, 5],
+              daysToHarvest: 75,
+              yield: "high",
+              spaceRequired: 0.5
+            }
+          },
+          "Cherry": {
+            requirements: {
+              sunHours: { min: 5, max: 8 },
+              soilTypes: ["Limoso", "Sabbioso", "Argilloso"],
+              drainage: ["fair", "good", "excellent"],
+              irrigation: "beneficial"
+            },
+            careProfile: {
+              difficulty: "principiante",
+              timePerWeek: 25
+            },
+            growthInfo: {
+              plantingMonths: [3, 4, 5, 6],
+              daysToHarvest: 60,
+              yield: "very-high",
+              spaceRequired: 0.3
+            }
+          }
+        }
+      },
+      "lattuga": {
+        varieties: {
+          "Romana": {
+            requirements: {
+              sunHours: { min: 3, max: 6 },
+              soilTypes: ["Limoso", "Sabbioso"],
+              drainage: ["good", "excellent"],
+              irrigation: "required"
+            },
+            careProfile: {
+              difficulty: "principiante",
+              timePerWeek: 15
+            },
+            growthInfo: {
+              plantingMonths: [3, 4, 5, 8, 9],
+              daysToHarvest: 35,
+              yield: "medium",
+              spaceRequired: 0.1
+            }
+          },
+          "Iceberg": {
+            requirements: {
+              sunHours: { min: 4, max: 6 },
+              soilTypes: ["Limoso", "Argilloso"],
+              drainage: ["good"],
+              irrigation: "required"
+            },
+            careProfile: {
+              difficulty: "principiante",
+              timePerWeek: 20
+            },
+            growthInfo: {
+              plantingMonths: [3, 4, 8, 9],
+              daysToHarvest: 45,
+              yield: "medium",
+              spaceRequired: 0.15
+            }
+          }
+        }
+      },
+      "basilico": {
+        varieties: {
+          "Genovese": {
+            requirements: {
+              sunHours: { min: 6, max: 8 },
+              soilTypes: ["Limoso", "Sabbioso"],
+              drainage: ["good", "excellent"],
+              irrigation: "required"
+            },
+            careProfile: {
+              difficulty: "principiante",
+              timePerWeek: 20
+            },
+            growthInfo: {
+              plantingMonths: [4, 5, 6],
+              daysToHarvest: 30,
+              yield: "high",
+              spaceRequired: 0.2
+            }
+          }
+        }
+      },
+      "carota": {
+        varieties: {
+          "Nantes": {
+            requirements: {
+              sunHours: { min: 4, max: 7 },
+              soilTypes: ["Sabbioso", "Limoso"],
+              drainage: ["excellent"],
+              irrigation: "beneficial"
+            },
+            careProfile: {
+              difficulty: "intermedio",
+              timePerWeek: 25
+            },
+            growthInfo: {
+              plantingMonths: [3, 4, 5, 7, 8],
+              daysToHarvest: 70,
+              yield: "medium",
+              spaceRequired: 0.05
+            }
+          }
+        }
+      },
+      "zucchina": {
+        varieties: {
+          "Genovese": {
+            requirements: {
+              sunHours: { min: 6, max: 8 },
+              soilTypes: ["Limoso", "Argilloso"],
+              drainage: ["good", "excellent"],
+              irrigation: "required"
+            },
+            careProfile: {
+              difficulty: "intermedio",
+              timePerWeek: 35
+            },
+            growthInfo: {
+              plantingMonths: [4, 5, 6],
+              daysToHarvest: 50,
+              yield: "very-high",
+              spaceRequired: 1.0
+            }
+          }
+        }
+      },
+      "peperone": {
+        varieties: {
+          "Quadrato d'Asti": {
+            requirements: {
+              sunHours: { min: 6, max: 8 },
+              soilTypes: ["Limoso", "Sabbioso"],
+              drainage: ["good", "excellent"],
+              irrigation: "required"
+            },
+            careProfile: {
+              difficulty: "intermedio",
+              timePerWeek: 30
+            },
+            growthInfo: {
+              plantingMonths: [4, 5],
+              daysToHarvest: 80,
+              yield: "high",
+              spaceRequired: 0.4
+            }
+          }
+        }
+      }
+    };
+
+    // === SUGGESTIONS ENGINE ===
+    class VegetableSuggestionsEngine {
+      constructor(vegetableDatabase) {
+        this.vegetableDatabase = vegetableDatabase;
+        console.log('🌱 Suggestions engine initialized with', Object.keys(vegetableDatabase).length, 'vegetables');
+      }
+
+      generateSuggestions(environmentalFactors, userProfile, options = {}) {
+        console.log('🔍 Generating suggestions...');
+        console.log('Environmental factors:', environmentalFactors);
+        console.log('User profile:', userProfile);
+        
+        const { maxSuggestions = 9, minScore = 0.3 } = options; // INCREASED TO 9
+        const suggestions = [];
+        
+        for (const [vegetableName, vegetableData] of Object.entries(this.vegetableDatabase)) {
+          for (const [varietyName, varietyData] of Object.entries(vegetableData.varieties)) {
+            const score = this.calculateScore(varietyData, environmentalFactors, userProfile);
+            console.log(`Score for ${vegetableName} ${varietyName}:`, score);
+            
+            if (score >= minScore) {
+              suggestions.push({
+                vegetable: vegetableName,
+                variety: varietyName,
+                score: { total: score },
+                data: varietyData,
+                confidence: this.calculateConfidence(score)
+              });
+            }
+          }
+        }
+
+        console.log('✅ Generated', suggestions.length, 'suggestions');
+        
+        return suggestions
+          .sort((a, b) => b.score.total - a.score.total)
+          .slice(0, maxSuggestions);
+      }
+
+      calculateScore(varietyData, environmentalFactors, userProfile) {
+        let score = 0.6; // Base score
+        
+        // Sun exposure match
+        const sunHours = environmentalFactors.sunExposure.hoursPerDay;
+        if (sunHours >= varietyData.requirements.sunHours.min - 1 && 
+            sunHours <= varietyData.requirements.sunHours.max + 1) {
+          score += 0.15;
+        }
+        
+        // Soil type match
+        if (varietyData.requirements.soilTypes.some(type => 
+          environmentalFactors.soilConditions.type.includes(type))) {
+          score += 0.15;
+        } else {
+          score += 0.05; // Partial credit
+        }
+        
+        // Drainage match
+        if (varietyData.requirements.drainage.includes(environmentalFactors.soilConditions.drainage)) {
+          score += 0.1;
+        }
+        
+        // Experience level match
+        const difficultyBonus = this.scoreDifficulty(varietyData.careProfile.difficulty, userProfile.experience);
+        score += difficultyBonus * 0.1;
+        
+        // Space requirement
+        if (userProfile.space && userProfile.space.size >= varietyData.growthInfo.spaceRequired) {
+          score += 0.1;
+        } else if (userProfile.space && userProfile.space.size >= varietyData.growthInfo.spaceRequired * 0.5) {
+          score += 0.05; // Partial credit
+        }
+        
+        // Beginner bonus for easy plants
+        if (userProfile.experience === 'Principiante' && varietyData.careProfile.difficulty === 'principiante') {
+          score += 0.1;
+        }
+        
+        return Math.min(1.0, score);
+      }
+
+      scoreDifficulty(plantDifficulty, userExperience) {
+        const difficultyMatrix = {
+          'Principiante': {
+            'principiante': 1.0,
+            'intermedio': 0.7,
+            'esperto': 0.4
+          },
+          'Intermedio': {
+            'principiante': 0.8,
+            'intermedio': 1.0,
+            'esperto': 0.9
+          },
+          'Esperto': {
+            'principiante': 0.6,
+            'intermedio': 0.9,
+            'esperto': 1.0
+          }
+        };
+        return difficultyMatrix[userExperience]?.[plantDifficulty] || 0.5;
+      }
+
+      calculateConfidence(score) {
+        if (score >= 0.8) return 'very-high';
+        if (score >= 0.7) return 'high';
+        if (score >= 0.6) return 'medium';
+        return 'low';
+      }
+    }
+
+    // === INITIALIZATION FUNCTION ===
+    function initializeApp() {
+      console.log('🚀 Initializing app...');
+      
+      // Always initialize the suggestions engine
+      if (!suggestionsEngine) {
+        suggestionsEngine = new VegetableSuggestionsEngine(vegetableDatabase);
+        console.log('✅ Suggestions engine created');
+      }
+      
+      // Create default user profile if missing
+      if (!userProfile) {
+        userProfile = {
+          experience: 'Principiante',
+          timeCommitment: {
+            minutesPerDay: 30,
+            frequency: 'daily'
+          },
+          primaryGoal: 'Coltivare il mio cibo',
+          seasonalTips: 'Sì',
+          space: { size: 20, type: 'garden' }
+        };
+        console.log('✅ Default user profile created:', userProfile);
+      }
+    }
+
+    // === MAIN FUNCTIONS ===
     function showScreen(screenId) {
       document.getElementById('onboardingForm').classList.add('hidden');
       document.getElementById('homepage').classList.add('hidden');
@@ -686,23 +992,53 @@
 
     document.getElementById('onboardingForm').addEventListener('submit', function(e) {
       e.preventDefault();
+      
+      const timeAmount = parseInt(document.getElementById('timeAmount').value);
+      const timeUnit = document.getElementById('timeUnit').value;
+      
+      let minutesPerDay = 0;
+      if (timeUnit.includes('minuti al giorno')) {
+        minutesPerDay = timeAmount;
+      } else if (timeUnit.includes('ore al giorno')) {
+        minutesPerDay = timeAmount * 60;
+      } else if (timeUnit.includes('minuti a settimana')) {
+        minutesPerDay = timeAmount / 7;
+      } else if (timeUnit.includes('ore a settimana')) {
+        minutesPerDay = (timeAmount * 60) / 7;
+      }
+
       userProfile = {
         experience: document.getElementById('experience').value,
-        timeCommitment: document.getElementById('timeAmount').value + ' ' + document.getElementById('timeUnit').value,
+        timeCommitment: {
+          minutesPerDay: minutesPerDay,
+          frequency: 'daily'
+        },
         primaryGoal: document.getElementById('goal').value,
-        seasonalTips: document.getElementById('tips').value
+        seasonalTips: document.getElementById('tips').value,
+        space: { size: 20, type: 'garden' } // Default space
       };
+
+      console.log('✅ User profile created from onboarding:', userProfile);
+
+      // Initialize suggestions engine
+      if (!suggestionsEngine) {
+        suggestionsEngine = new VegetableSuggestionsEngine(vegetableDatabase);
+        console.log('✅ Suggestions engine initialized from onboarding');
+      }
+      
       showScreen('homepage');
       renderProjectArea();
     });
 
     function showHomepage() {
+      initializeApp(); // Ensure initialization
       showScreen('homepage');
       renderProjectArea();
     }
 
     function goHome(event) {
       event.preventDefault();
+      initializeApp(); // Ensure initialization
       showHomepage();
     }
 
@@ -734,6 +1070,7 @@
     }
 
     function showProjectForm() {
+      initializeApp(); // Ensure initialization
       document.getElementById('projLocation').value = '';
       document.getElementById('projType').value = '';
       document.getElementById('projSize').value = '';
@@ -781,17 +1118,180 @@
         sunExposure,
         environment
       });
-      plantLists.push([]); // Lista piante vuota per il progetto
+      
+      // Update user profile with actual space information
+      if (userProfile) {
+        userProfile.space = {
+          size: parseInt(size) || 20,
+          type: type.toLowerCase()
+        };
+        console.log('✅ Updated user profile space:', userProfile.space);
+      }
+      
+      plantLists.push([]);
       showHomepage();
     });
 
     function openProjectDashboard(idx) {
+      initializeApp(); // Ensure initialization
       currentProjectIdx = idx;
+      console.log('📊 Opened project dashboard for project:', idx);
       showScreen('projectDashboard');
       showDashboardTab('overview');
     }
 
-    // UPDATED: Generate tasks grouped by TASK TYPE (not vegetable type)
+    function generateEnvironmentalFactors(project) {
+      // Ensure we have default values
+      const sunHours = project.sunExposure && project.sunExposure.length > 0 ? 
+                       (project.sunExposure.includes('Pieno Sole') ? 7 : 
+                        project.sunExposure.includes('Mezzo Sole') ? 5 : 3) : 6;
+      
+      const drainage = project.environment && project.environment.length > 0 ?
+                       (project.environment.includes('Buon Drenaggio') ? 'good' : 
+                        project.environment.includes('Scarso Drenaggio') ? 'poor' : 'fair') : 'good';
+      
+      const soilTypes = project.soilConditions && project.soilConditions.length > 0 ? 
+                        project.soilConditions : ['Limoso'];
+      
+      const factors = {
+        location: {
+          coordinates: { lat: 41.9, lng: 12.5 },
+          address: project.location,
+          averageRainfall: 600,
+          altitude: 100,
+          frostRisk: 'low'
+        },
+        sunExposure: {
+          hoursPerDay: sunHours,
+          intensity: 'medium',
+          pattern: project.sunExposure && project.sunExposure[0] ? project.sunExposure[0] : 'full-sun'
+        },
+        soilConditions: {
+          type: soilTypes,
+          drainage: drainage,
+          ph: 6.5,
+          fertility: 'medium'
+        },
+        irrigationAvailable: project.environment ? project.environment.includes('Irrigazione disponibile') : false
+      };
+      
+      console.log('🌍 Generated environmental factors:', factors);
+      return factors;
+    }
+
+    function renderSmartSuggestions(containerId = 'smartSuggestionsGrid') {
+      console.log('🎯 renderSmartSuggestions called for container:', containerId);
+      console.log('🔧 suggestionsEngine exists:', !!suggestionsEngine);
+      console.log('👤 userProfile exists:', !!userProfile);
+      console.log('📁 currentProjectIdx:', currentProjectIdx);
+
+      // Force initialization if missing
+      if (!suggestionsEngine || !userProfile) {
+        console.log('⚠️ Missing requirements, initializing...');
+        initializeApp();
+      }
+
+      if (!suggestionsEngine || !userProfile) {
+        console.log('❌ Still missing requirements after initialization');
+        const grid = document.getElementById(containerId);
+        if (grid) {
+          grid.innerHTML = '<p style="color: red;">Errore: Completa prima l\'onboarding dall\'inizio.</p>';
+        }
+        return;
+      }
+
+      if (currentProjectIdx === null || !projects[currentProjectIdx]) {
+        console.log('❌ No project selected');
+        const grid = document.getElementById(containerId);
+        if (grid) {
+          grid.innerHTML = '<p style="color: orange;">Seleziona un progetto per vedere i suggerimenti.</p>';
+        }
+        return;
+      }
+
+      const project = projects[currentProjectIdx];
+      console.log('📋 Current project:', project);
+      
+      const environmentalFactors = generateEnvironmentalFactors(project);
+      
+      const suggestions = suggestionsEngine.generateSuggestions(
+        environmentalFactors, 
+        userProfile,
+        { maxSuggestions: 9, minScore: 0.3 } // INCREASED TO 9
+      );
+
+      console.log('📝 Final suggestions:', suggestions);
+
+      const grid = document.getElementById(containerId);
+      if (!grid) {
+        console.log('❌ Grid container not found:', containerId);
+        return;
+      }
+
+      grid.innerHTML = '';
+
+      if (suggestions.length === 0) {
+        grid.innerHTML = '<p style="color: orange;">Nessun suggerimento generato. Prova a modificare le condizioni del progetto.</p>';
+        return;
+      }
+
+      suggestions.forEach(suggestion => {
+        const plantCard = document.createElement('div');
+        plantCard.className = 'plant-card';
+        
+        // Different click behavior for overview vs add plant
+        if (containerId === 'smartSuggestionsGridOverview') {
+          plantCard.onclick = () => {
+            // Navigate to add plant screen with pre-filled data
+            showAddPlantWireframe();
+            fillPlantForm(suggestion.vegetable, suggestion.variety);
+          };
+        } else {
+          plantCard.onclick = () => fillPlantForm(suggestion.vegetable, suggestion.variety);
+        }
+        
+        const confidenceBadge = `<div class="confidence-badge confidence-${suggestion.confidence}">${suggestion.confidence.replace('-', ' ').toUpperCase()}</div>`;
+        const scoreDisplay = `<div class="score-display">${Math.round(suggestion.score.total * 100)}% compatibilità</div>`;
+        
+        let imageUrl = '';
+        switch(suggestion.vegetable.toLowerCase()) {
+          case 'pomodoro':
+            imageUrl = 'https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg';
+            break;
+          case 'lattuga':
+            imageUrl = 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Lettuce_01.jpg';
+            break;
+          case 'basilico':
+            imageUrl = 'https://upload.wikimedia.org/wikipedia/commons/4/44/Basil-Basilico-Ocimum_basilicum-dbaron.jpg';
+            break;
+          case 'carota':
+            imageUrl = 'https://upload.wikimedia.org/wikipedia/commons/5/58/Carrots_of_many_colors.jpg';
+            break;
+          case 'zucchina':
+            imageUrl = 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Zucchini_and_flower.jpg';
+            break;
+          case 'peperone':
+            imageUrl = 'https://upload.wikimedia.org/wikipedia/commons/7/7b/Red_and_green_bell_peppers.jpg';
+            break;
+          default:
+            imageUrl = 'https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg';
+        }
+
+        plantCard.innerHTML = `
+          ${confidenceBadge}
+          <img src="${imageUrl}" alt="${suggestion.vegetable}" onerror="this.style.display='none';" />
+          <div class="plant-card-name">${suggestion.vegetable}</div>
+          <div style="font-size:0.9em;color:#388e3c;">${suggestion.variety}</div>
+          ${scoreDisplay}
+        `;
+
+        grid.appendChild(plantCard);
+      });
+
+      console.log('✅ Suggestions rendered to grid successfully');
+    }
+
+    // TASK GENERATION FUNCTIONS (keeping existing)
     function generateTasksForPlants(plants) {
       const tasks = [];
       const today = new Date();
@@ -801,9 +1301,6 @@
         
         const plantName = plant.type.toLowerCase();
         
-        // Generate different tasks for each plant
-        
-        // WATERING TASK - All plants need water
         tasks.push({
           plantName: plant.type,
           title: 'Innaffiare',
@@ -814,7 +1311,6 @@
           taskType: 'Innaffiare'
         });
 
-        // FERTILIZING TASK - Most plants need fertilizing
         if (!plantName.includes('lattuga') && !plantName.includes('rucola')) {
           tasks.push({
             plantName: plant.type,
@@ -827,7 +1323,6 @@
           });
         }
 
-        // PRUNING TASK - Specific plants need pruning
         if (plantName.includes('pomodoro') || plantName.includes('basilico') || plantName.includes('peperone')) {
           tasks.push({
             plantName: plant.type,
@@ -840,7 +1335,6 @@
           });
         }
 
-        // HARVESTING TASK - Ready plants need harvesting
         if (!plantName.includes('carota') || new Date(plant.date).getTime() < today.getTime() - 60 * 24 * 60 * 60 * 1000) {
           tasks.push({
             plantName: plant.type,
@@ -853,7 +1347,6 @@
           });
         }
 
-        // PEST CONTROL TASK - All plants need monitoring
         tasks.push({
           plantName: plant.type,
           title: 'Controllo Parassiti',
@@ -868,7 +1361,6 @@
       return tasks;
     }
 
-    // Helper functions for task descriptions
     function getWateringDescription(plantName) {
       if (plantName.includes('pomodoro')) return 'Innaffiare regolarmente, evitando le foglie';
       if (plantName.includes('lattuga')) return 'Mantenere il terreno umido ma non bagnato';
@@ -912,36 +1404,11 @@
       return 7;
     }
 
-    function calculateTaskStats(tasks) {
-      const stats = { overdue: 0, dueToday: 0, upcoming: 0, completed: 0 };
-      tasks.forEach(task => {
-        if (task.status === 'overdue') stats.overdue++;
-        else if (task.status === 'due-today') stats.dueToday++;
-        else if (task.status === 'upcoming') stats.upcoming++;
-        else if (task.status === 'completed') stats.completed++;
-      });
-      return stats;
-    }
-
-    function filterTasks(filter) {
-      const buttons = document.querySelectorAll('.task-filter-btn');
-      buttons.forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
-
-      const tasks = document.querySelectorAll('.task-item');
-      tasks.forEach(task => {
-        if (filter === 'all' || task.dataset.filter === filter) {
-          task.style.display = '';
-        } else {
-          task.style.display = 'none';
-        }
-      });
-    }
-
     function showDashboardTab(tab) {
       const proj = projects[currentProjectIdx];
       const plants = plantLists[currentProjectIdx] || [];
       let html = '';
+      
       if (tab === 'overview') {
         html = `
           <h2>Dashboard Progetto: ${proj.location}</h2>
@@ -969,39 +1436,22 @@
             </ul>
             <button class="btn-primary" onclick="showAddPlantWireframe()">${plants.length === 0 ? 'Crea la tua prima pianta' : 'Aggiungi pianta'}</button>
           </div>
-          <div>
-            <h3>Piante consigliate per la tua zona</h3>
-            <div class="suggested-plants-grid">
-              <div class="plant-card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg" alt="Pomodoro" />
-                <div class="plant-card-name">Pomodoro</div>
-              </div>
-              <div class="plant-card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Aubergine.jpg" alt="Melanzana" />
-                <div class="plant-card-name">Melanzana</div>
-              </div>
-              <div class="plant-card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Zucchini_and_flower.jpg" alt="Zucchina" />
-                <div class="plant-card-name">Zucchina</div>
-              </div>
-              <div class="plant-card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/Red_and_green_bell_peppers.jpg" alt="Peperoni" />
-                <div class="plant-card-name">Peperoni</div>
-              </div>
-              <div class="plant-card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4b/Beans_in_pod.jpg" alt="Fagioli" />
-                <div class="plant-card-name">Fagioli</div>
-              </div>
-              <div class="plant-card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Lettuce_01.jpg" alt="Lattuga" />
-                <div class="plant-card-name">Lattuga</div>
-              </div>
+          <div id="smartSuggestionsOverview" style="margin-top: 2rem; text-align: left;">
+            <h3 style="color: #388e3c;">🎯 Suggerimenti per le tue condizioni</h3>
+            <div class="suggested-plants-grid" id="smartSuggestionsGridOverview">
+              <!-- Suggestions will be dynamically inserted here -->
             </div>
           </div>
         `;
         document.getElementById('dashboardContent').innerHTML = html;
+        
+        // Render suggestions in the overview
+        setTimeout(() => {
+          renderSmartSuggestions('smartSuggestionsGridOverview');
+        }, 100);
+        
       } else if (tab === 'plants') {
-        // DESKTOP TABLE
+        // Plant management (existing code)
         html += `
           <h2>Le tue piante</h2>
           <div class="responsive-table-container">
@@ -1041,60 +1491,11 @@
             </table>
           `}
           </div>
-        `;
-        // MOBILE CARD VIEW
-        html += `
-        <div class="plant-cards-mobile" style="display:none;">
-        ${plants.length === 0 ? '<p>Nessuna pianta ancora.</p>' : plants.map((p, idx) => {
-          let [nome, ...varietaArr] = p.type.split(' (');
-          let varieta = varietaArr.length ? varietaArr.join(' (').replace(/\)$/, '') : '';
-          let trattamenti = (p.trattamenti && p.trattamenti.length)
-            ? `<ul class="plant-card-mobile-trattamenti-list">${p.trattamenti.map(t =>
-                `<li><strong>${t.nome}</strong> <span style="color:#388e3c;">${t.data}</span> <span style="color:#666;">${t.cadence}</span>${t.note?': '+t.note:''}</li>`
-              ).join('')}</ul>`
-            : '<span style="color:#888;">Nessuno</span>';
-          return `
-            <div class="plant-card-mobile">
-              <div class="plant-card-mobile-row"><span class="plant-card-mobile-label">Nome:</span> <span class="plant-card-mobile-value">${nome}</span></div>
-              <div class="plant-card-mobile-row"><span class="plant-card-mobile-label">Varietà:</span> <span class="plant-card-mobile-value">${varieta}</span></div>
-              <div class="plant-card-mobile-row"><span class="plant-card-mobile-label">Quantità:</span> <span class="plant-card-mobile-value">${p.quantity}</span></div>
-              <div class="plant-card-mobile-row"><span class="plant-card-mobile-label">Data semina:</span> <span class="plant-card-mobile-value">${p.date}</span></div>
-              <div class="plant-card-mobile-row"><span class="plant-card-mobile-label">Note:</span> <span class="plant-card-mobile-value">${p.notes || ''}</span></div>
-              <div class="plant-card-mobile-trattamenti">
-                <div class="plant-card-mobile-trattamenti-title">Trattamenti speciali</div>
-                ${trattamenti}
-              </div>
-              <div class="plant-card-mobile-cta">
-                <button class="btn-primary btn-small" onclick="openTrattamentoPopup(${idx})">Trattamenti speciali</button>
-              </div>
-            </div>
-          `;
-        }).join('')}
-        </div>
-        <button class="btn-primary" style="margin-top:1.5rem;" onclick="showAddPlantWireframe()">Aggiungi pianta</button>
+          <button class="btn-primary" style="margin-top:1.5rem;" onclick="showAddPlantWireframe()">Aggiungi pianta</button>
         `;
         document.getElementById('dashboardContent').innerHTML = html;
-        // Show/hide cards/table depending on screen size
-        if (window.innerWidth <= 700) {
-          document.querySelector('.responsive-table-container').style.display = 'none';
-          document.querySelector('.plant-cards-mobile').style.display = 'flex';
-        } else {
-          document.querySelector('.responsive-table-container').style.display = '';
-          document.querySelector('.plant-cards-mobile').style.display = 'none';
-        }
-        window.onresize = function() {
-          if (document.getElementById('dashboardContent').contains(document.querySelector('.responsive-table-container'))) {
-            if (window.innerWidth <= 700) {
-              document.querySelector('.responsive-table-container').style.display = 'none';
-              document.querySelector('.plant-cards-mobile').style.display = 'flex';
-            } else {
-              document.querySelector('.responsive-table-container').style.display = '';
-              document.querySelector('.plant-cards-mobile').style.display = 'none';
-            }
-          }
-        }
       } else if (tab === 'tasks') {
-        // NEW TASK-BASED CATEGORIZATION
+        // Task management with categories
         const allTasks = generateTasksForPlants(plants);
         
         if (allTasks.length === 0) {
@@ -1103,7 +1504,6 @@
             <div class="no-tasks">Nessuna attività programmata. Aggiungi delle piante per vedere le attività!</div>
           `;
         } else {
-          // Group tasks by TASK TYPE instead of vegetable type
           const taskCategories = {};
           allTasks.forEach(task => {
             if (!taskCategories[task.taskType]) {
@@ -1112,7 +1512,6 @@
             taskCategories[task.taskType].push(task);
           });
 
-          // Define task icons
           const taskIcons = {
             'Innaffiare': '💧',
             'Concimazione': '🌱',
@@ -1123,7 +1522,6 @@
 
           html = `<h2>Attività per Tipo</h2>`;
           
-          // Render each task category
           Object.keys(taskCategories).forEach(taskType => {
             const categoryTasks = taskCategories[taskType];
             const taskIcon = taskIcons[taskType] || '📋';
@@ -1166,6 +1564,7 @@
     }
 
     function showAddPlantWireframe() {
+      console.log('🌱 showAddPlantWireframe called');
       document.getElementById('addPlantWireframe').style.display = 'block';
       document.getElementById('projectDashboard').classList.add('hidden');
       document.getElementById('plantTypeWire').value = '';
@@ -1173,6 +1572,11 @@
       document.getElementById('plantQuantityWire').value = '';
       document.getElementById('plantDateWire').value = '';
       document.getElementById('plantNotesWire').value = '';
+      
+      // Generate suggestions for add plant screen
+      setTimeout(() => {
+        renderSmartSuggestions('smartSuggestionsGrid');
+      }, 100);
     }
 
     function cancelAddPlantWire() {
@@ -1182,6 +1586,7 @@
     }
 
     function fillPlantForm(nome, varieta) {
+      console.log('🔧 Filling plant form with:', nome, varieta);
       document.getElementById('plantTypeWire').value = nome;
       document.getElementById('plantVarietyWire').value = varieta;
     }
@@ -1207,7 +1612,6 @@
       showDashboardTab('plants');
     }
 
-    // EDIT SPECS LOGIC
     function showSpecsEdit(event) {
       if(event) { event.preventDefault(); event.stopPropagation(); }
       const proj = projects[currentProjectIdx];
@@ -1229,6 +1633,7 @@
         cb.checked = (proj.environment || []).includes(cb.value);
       });
     }
+
     function saveSpecsEdit() {
       const proj = projects[currentProjectIdx];
       proj.type = document.getElementById('editProjType').value;
@@ -1239,12 +1644,12 @@
       showScreen('projectDashboard');
       showDashboardTab('overview');
     }
+
     function cancelSpecsEdit() {
       showScreen('projectDashboard');
       showDashboardTab('overview');
     }
 
-    // --- Trattamenti Speciali per pianta ---
     function openTrattamentoPopup(plantIdx) {
       currentPlantIdxForTrattamento = plantIdx;
       document.getElementById('trattamentoNome').value = '';
@@ -1253,10 +1658,12 @@
       document.getElementById('trattamentoNote').value = '';
       document.getElementById('trattamentoPopup').style.display = 'flex';
     }
+
     function closeTrattamentoPopup() {
       document.getElementById('trattamentoPopup').style.display = 'none';
       currentPlantIdxForTrattamento = null;
     }
+
     function saveTrattamento() {
       const nome = document.getElementById('trattamentoNome').value.trim();
       const cadence = document.getElementById('trattamentoCadence').value.trim();
