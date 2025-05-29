@@ -60,20 +60,44 @@
     .plant-list { margin: 0; padding: 0; list-style: none; }
     .plant-list li { padding: 0.6rem 0; border-bottom: 1px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center; }
     .plant-list li:last-child { border-bottom: none; }
+    /* FIXED DASHBOARD NAV FOR MOBILE */
     .dashboard-nav {
       margin: 1.5rem 0 1rem 0;
       display: flex;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      gap: 0.5rem;
-      justify-content: center;
+      width: 100%;
+      justify-content: stretch;
+      align-items: stretch;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 0 3px rgba(0,0,0,0.04);
+      background: #f8f8f8;
     }
     .dashboard-nav button {
+      flex: 1 1 0;
+      min-width: 0;
       margin: 0;
-      padding: 0.6rem 1.2rem;
-      min-width: 110px;
-      white-space: nowrap;
-      flex-shrink: 0;
+      padding: 0.6rem 0.2rem;
+      font-size: 1.1rem;
+      border: none;
+      border-right: 1px solid #e0e0e0;
+      border-radius: 0;
+      background: #f8f8f8;
+      transition: background 0.2s;
+      outline: none;
+    }
+    .dashboard-nav button:last-child {
+      border-right: none;
+    }
+    .dashboard-nav button.active,
+    .dashboard-nav button:hover {
+      background: #4caf50;
+      color: #fff;
+    }
+    @media (max-width: 700px) {
+      .dashboard-nav button {
+        font-size: 1rem;
+        padding: 0.6rem 0.1rem;
+      }
     }
     .suggested-plants-grid {
       display: grid;
@@ -87,9 +111,6 @@
       }
       .container {
         padding: 1rem;
-      }
-      .dashboard-nav {
-        gap: 0.2rem;
       }
     }
     .plant-card {
