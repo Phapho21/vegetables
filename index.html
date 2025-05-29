@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GreenTrack Prototipo Unificato</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f7faf7; margin: 0; padding: 0; }
+    header { background: #4caf50; color: #fff; padding: 1.2rem 0; text-align: center; letter-spacing: 2px; position: relative;}
+    nav.topnav { position: absolute; top: 0; right: 0; margin: 0.8rem 2rem 0 0; }
+    nav.topnav a {
+      color: #fff;
+      background: #388e3c;
+      text-decoration: none;
+      padding: 0.5rem 1.2rem;
+      border-radius: 5px;
+      font-size: 1rem;
+      margin-left: 1rem;
+      transition: background 0.2s;
+    }
+    nav.topnav a:hover { background: #256029; }
+    .container { max-width: 700px; margin: 2rem auto; background: #fff; border-radius: 12px; box-shadow: 0 0 16px rgba(0,0,0,0.06); padding: 2rem; text-align: center; }
+    h2 { color: #388e3c; margin-bottom: 1.5rem; }
+    .project-card { background: #e8f5e9; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 0 8px rgba(0,0,0,0.05); text-align: left; }
+    .btn-primary { background: #4caf50; color: white; border: none; padding: 1rem 2rem; font-size: 1.2rem; border-radius: 6px; cursor: pointer; }
+    .btn-primary:hover { background: #388e3c; }
+    .btn-small { font-size: 0.95em; padding: 0.3em 1em; margin: 0.2em 0; }
+    .project-info { margin-bottom: 0.5rem; }
+    label { display: block; margin-top: 1rem; font-weight: bold; text-align: left;}
+    select, input[type=number], input[type=text], input[type=date], textarea { width: 100%; padding: 0.5rem; margin-top: 0.3rem; border: 1px solid #ccc; border-radius: 4px; }
+    .step { margin-bottom: 2rem; }
+    .hidden { display: none; }
+    .checkbox-group { margin-top: 0.5rem; margin-bottom: 1rem; }
+    .checkbox-group label { font-weight: normal; display: block; margin-left: 1rem; }
+    .nav { margin-bottom: 2rem; }
+    .nav button { background: none; border: none; color: #333; font-size: 1.1rem; padding: 0.5rem 1rem; cursor: pointer; border-radius: 5px; }
+    .nav button.active, .nav button:hover { background: #4caf50; color: #fff; }
+    .dashboard-summary { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 1.5rem; }
+    .dashboard-summary .card { flex: 1 1 250px; background: #f4f9f4; border-radius: 8px; padding: 1rem 1.5rem; margin-bottom: 0; box-shadow: 0 0 6px rgba(0,0,0,0.04); position: relative;}
+    .edit-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1.2em;
+      color: #388e3c;
+      background: #e8f5e9;
+      border: none;
+      cursor: pointer;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .edit-icon:hover {
+      background: #c8e6c9;
+    }
+    .plant-list { margin: 0; padding: 0; list-style: none; }
+    .plant-list li { padding: 0.6rem 0; border-bottom: 1px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center; }
+    .plant-list li:last-child { border-bottom: none; }
+    .dashboard-nav { margin: 1.5rem 0 1rem 0; }
+    .dashboard-nav button { margin: 0 0.5rem; padding: 0.6rem 1.2rem; }
+    .suggested-plants-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 2rem;
+    }
+    .plant-card {
+      border: 2px solid transparent;
+      border-radius: 8px;
+      padding: 5px;
+      text-align: center;
+      background: #fff;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: border 0.2s;
+    }
+    .plant-card:hover {
+      border: 2px solid #4caf50;
+    }
+    .plant-card img {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 6px;
+    }
+    .plant-card-name {
+      margin-top: 8px;
+      font-weight: bold;
+    }
+    #addPlantWireframe { max-width: 500px; margin: 2rem auto; background: #fff; border-radius: 12px; box-shadow: 0 0 16px rgba(0,0,0,0.07); padding: 2rem; display: none;}
+    #addPlantWireframe label {margin-top: 1rem;}
+    #addPlantWireframe input, #addPlantWireframe textarea {margin-bottom: 1rem;}
+    .plant-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
+    .plant-table th, .plant-table td { border: 1px solid #e0e0e0; padding: 8px 4px; text-align: left; }
+    .plant-table th { background: #e8f5e9; color: #388e3c; }
+    .plant-table tr:nth-child(even) { background: #f9f9f9; }
+    #editSpecsForm { max-width: 500px; margin: 2rem auto; background: #fff; border-radius: 12px; box-shadow: 0 0 16px rgba(0,0,0,0.07); padding: 2rem; display: none;}
+    #editSpecsForm label {margin-top: 1rem;}
+    #editSpecsForm input, #editSpecsForm select {margin-bottom: 1rem;}
+    .checkbox-group-edit { margin-top: 0.5rem; margin-bottom: 1rem; display: flex; flex-wrap: wrap;}
+    .checkbox-group-edit label { font-weight: normal; margin-right: 1.5rem; }
+    #trattamentoPopup {
+      display:none;
+      position:fixed;
+      top:0; left:0; right:0; bottom:0;
+      background:rgba(0,0,0,0.25);
+      z-index:1000;
+      align-items: center;
+      justify-content: center;
+    }
+    #trattamentoPopup .popup-content {
+      background:#fff;
+      border-radius:12px;
+      max-width:350px;
+      margin: 5% auto;
+      padding:2rem 1.5rem 1rem 1.5rem;
+      box-shadow:0 0 20px rgba(0,0,0,0.12);
+      text-align:left;
+      position:relative;
+    }
+    #trattamentoPopup label {margin-top:1rem;}
+    #trattamentoPopup input, #trattamentoPopup textarea {margin-bottom:1rem;}
+    #trattamentoPopup .popup-actions {text-align:center; margin-top:1.2rem;}
+  </style>
+</head>
+<body>
+  <header>
+    <span>GreenTrack Prototipo Unificato</span>
+    <nav class="topnav">
+      <a href="#" onclick="goHome(event)">Home</a>
+    </nav>
+  </header>
+  <div class="container">
+
+    <!-- Onboarding Screen -->
+    <form id="onboardingForm" autocomplete="off">
+      <div class="step" id="step1">
+        <h2>1. Qual è il tuo livello di esperienza nel giardinaggio?</h2>
+        <select id="experience" required>
+          <option value="" disabled selected>Seleziona il tuo livello</option>
+          <option value="Principiante">Principiante</option>
+          <option value="Intermedio">Intermedio</option>
+          <option value="Esperto">Esperto</option>
+        </select>
+      </div>
+      <div class="step" id="step2">
+        <h2>2. Quanto tempo puoi dedicare al giardinaggio ogni giorno o settimana?</h2>
+        <input type="number" id="timeAmount" min="0" placeholder="Inserisci il tempo" required />
+        <select id="timeUnit" required>
+          <option value="" disabled selected>Seleziona unità</option>
+          <option value="minuti al giorno">Minuti al giorno</option>
+          <option value="ore al giorno">Ore al giorno</option>
+          <option value="minuti a settimana">Minuti a settimana</option>
+          <option value="ore a settimana">Ore a settimana</option>
+        </select>
+      </div>
+      <div class="step" id="step3">
+        <h2>3. Qual è il tuo obiettivo principale per il giardinaggio?</h2>
+        <select id="goal" required>
+          <option value="" disabled selected>Seleziona il tuo obiettivo</option>
+          <option value="Coltivare il mio cibo">Coltivare il mio cibo</option>
+          <option value="Abbellire lo spazio">Abbellire lo spazio</option>
+          <option value="Imparare una nuova abilità">Imparare una nuova abilità</option>
+          <option value="Relax/terapia">Relax/terapia</option>
+          <option value="Altro">Altro</option>
+        </select>
+      </div>
+      <div class="step" id="step4">
+        <h2>4. Vuoi ricevere consigli stagionali e migliori pratiche?</h2>
+        <select id="tips" required>
+          <option value="" disabled selected>Seleziona un'opzione</option>
+          <option value="Sì">Sì, inviami consigli</option>
+          <option value="No">No, solo le basi</option>
+        </select>
+      </div>
+      <button type="submit" class="btn-primary">Completa Onboarding</button>
+    </form>
+
+    <!-- Homepage Screen -->
+    <div id="homepage" class="hidden">
+      <div class="nav">
+        <button id="nav-home" class="active" onclick="showHomepage()">Home</button>
+        <button id="nav-create" onclick="showProjectForm()">Crea Progetto</button>
+      </div>
+      <h2>Benvenuto su GreenTrack!</h2>
+      <div id="projectArea"></div>
+    </div>
+
+    <!-- Project Creation Step 1: Address and Land Type -->
+    <form id="projectForm1" class="hidden" autocomplete="off">
+      <h2>Passo 1: Indirizzo e Tipo di Terreno</h2>
+      <label for="projLocation">Indirizzo o posizione GPS</label>
+      <input type="text" id="projLocation" placeholder="es. Calabria, Italia" required />
+
+      <label for="projType">Tipo di terreno</label>
+      <select id="projType" required>
+        <option value="" disabled selected>Seleziona tipo</option>
+        <option value="Esterno">Esterno</option>
+        <option value="Interno">Interno</option>
+        <option value="Balcone">Balcone</option>
+        <option value="Giardino">Giardino</option>
+      </select>
+
+      <label for="projSize">Dimensione terreno (es. 20 m²)</label>
+      <input type="text" id="projSize" placeholder="es. 20" required />
+
+      <button type="button" class="btn-primary" id="nextToSoil">Avanti</button>
+    </form>
+
+    <!-- Project Creation Step 2: Soil/Environmental Conditions -->
+    <form id="projectForm2" class="hidden" autocomplete="off">
+      <h2>Passo 2: Suolo e Condizioni Ambientali</h2>
+
+      <div class="checkbox-category">
+        <label><strong>Suolo</strong></label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="soil" value="Argilloso" /> Argilloso</label>
+          <label><input type="checkbox" name="soil" value="Sabbioso" /> Sabbioso</label>
+          <label><input type="checkbox" name="soil" value="Limoso" /> Limoso</label>
+          <label><input type="checkbox" name="soil" value="Roccioso" /> Roccioso</label>
+        </div>
+      </div>
+
+      <div class="checkbox-category">
+        <label><strong>Esposizione al Sole</strong></label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="sun" value="Pieno Sole" /> Pieno Sole</label>
+          <label><input type="checkbox" name="sun" value="Mezzo Sole" /> Mezzo Sole</label>
+          <label><input type="checkbox" name="sun" value="Ombra" /> Ombra</label>
+        </div>
+      </div>
+
+      <div class="checkbox-category">
+        <label><strong>Ambiente</strong></label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="environment" value="Buon Drenaggio" /> Buon Drenaggio</label>
+          <label><input type="checkbox" name="environment" value="Scarso Drenaggio" /> Scarso Drenaggio</label>
+          <label><input type="checkbox" name="environment" value="Pianeggiante" /> Pianeggiante</label>
+          <label><input type="checkbox" name="environment" value="In pendenza" /> In pendenza</label>
+          <label><input type="checkbox" name="environment" value="Esposizione al vento" /> Esposizione al vento</label>
+          <label><input type="checkbox" name="environment" value="Rischio gelo" /> Rischio gelo</label>
+          <label><input type="checkbox" name="environment" value="Irrigazione disponibile" /> Irrigazione disponibile</label>
+        </div>
+      </div>
+
+      <button type="button" class="btn-primary" id="backToDetails">Indietro</button>
+      <button type="submit" class="btn-primary">Crea Progetto</button>
+    </form>
+
+    <!-- Project Dashboard Screen -->
+    <div id="projectDashboard" class="hidden">
+      <div class="dashboard-nav">
+        <button onclick="showDashboardTab('overview')">Panoramica</button>
+        <button onclick="showDashboardTab('plants')">Piante</button>
+        <button onclick="showDashboardTab('tasks')">Attività</button>
+        <button onclick="showDashboardTab('tips')">Consigli</button>
+        <button onclick="showDashboardTab('journal')">Diario</button>
+        <button onclick="showHomepage()" style="float:right;">Torna alla Home</button>
+      </div>
+      <div id="dashboardContent"></div>
+    </div>
+
+    <!-- Edit Project Specs Screen -->
+    <form id="editSpecsForm" class="hidden" autocomplete="off" onsubmit="event.preventDefault(); saveSpecsEdit();">
+      <h2>Modifica specifiche progetto</h2>
+      <label for="editProjType">Tipo di terreno</label>
+      <select id="editProjType" required>
+        <option value="Esterno">Esterno</option>
+        <option value="Interno">Interno</option>
+        <option value="Balcone">Balcone</option>
+        <option value="Giardino">Giardino</option>
+      </select>
+      <label for="editProjSize">Dimensione terreno (es. 20 m²)</label>
+      <input type="text" id="editProjSize" required />
+
+      <label>Suolo</label>
+      <div class="checkbox-group-edit" id="editSoilGroup">
+        <label><input type="checkbox" name="editSoil" value="Argilloso" /> Argilloso</label>
+        <label><input type="checkbox" name="editSoil" value="Sabbioso" /> Sabbioso</label>
+        <label><input type="checkbox" name="editSoil" value="Limoso" /> Limoso</label>
+        <label><input type="checkbox" name="editSoil" value="Roccioso" /> Roccioso</label>
+      </div>
+
+      <label>Esposizione al Sole</label>
+      <div class="checkbox-group-edit" id="editSunGroup">
+        <label><input type="checkbox" name="editSun" value="Pieno Sole" /> Pieno Sole</label>
+        <label><input type="checkbox" name="editSun" value="Mezzo Sole" /> Mezzo Sole</label>
+        <label><input type="checkbox" name="editSun" value="Ombra" /> Ombra</label>
+      </div>
+
+      <label>Ambiente</label>
+      <div class="checkbox-group-edit" id="editEnvGroup">
+        <label><input type="checkbox" name="editEnv" value="Buon Drenaggio" /> Buon Drenaggio</label>
+        <label><input type="checkbox" name="editEnv" value="Scarso Drenaggio" /> Scarso Drenaggio</label>
+        <label><input type="checkbox" name="editEnv" value="Pianeggiante" /> Pianeggiante</label>
+        <label><input type="checkbox" name="editEnv" value="In pendenza" /> In pendenza</label>
+        <label><input type="checkbox" name="editEnv" value="Esposizione al vento" /> Esposizione al vento</label>
+        <label><input type="checkbox" name="editEnv" value="Rischio gelo" /> Rischio gelo</label>
+        <label><input type="checkbox" name="editEnv" value="Irrigazione disponibile" /> Irrigazione disponibile</label>
+      </div>
+      <div style="text-align:center; margin-top:1.5rem;">
+        <button class="btn-primary" type="submit" style="min-width:120px;">Salva</button>
+        <button class="btn-primary" type="button" style="min-width:120px; background: #ccc; color: #222; margin-left:1rem;" onclick="cancelSpecsEdit()">Annulla</button>
+      </div>
+    </form>
+
+    <!-- CREA LA TUA PIANTA - Wireframe con suggerimenti -->
+    <div id="addPlantWireframe" style="display:none;">
+      <h2 style="color: #388e3c; text-align: center; margin-bottom: 1.5rem;">Crea la tua pianta</h2>
+      <div>
+        <h3 style="text-align:left;">Suggerimenti per il tuo terreno</h3>
+        <div class="suggested-plants-grid">
+          <div class="plant-card" onclick="fillPlantForm('Pomodoro', 'San Marzano')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg" alt="Pomodoro" />
+            <div class="plant-card-name">Pomodoro</div>
+            <div style="font-size:0.9em;color:#388e3c;">San Marzano</div>
+          </div>
+          <div class="plant-card" onclick="fillPlantForm('Melanzana', 'Violetta lunga')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Aubergine.jpg" alt="Melanzana" />
+            <div class="plant-card-name">Melanzana</div>
+            <div style="font-size:0.9em;color:#388e3c;">Violetta lunga</div>
+          </div>
+          <div class="plant-card" onclick="fillPlantForm('Zucchina', 'Genovese')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Zucchini_and_flower.jpg" alt="Zucchina" />
+            <div class="plant-card-name">Zucchina</div>
+            <div style="font-size:0.9em;color:#388e3c;">Genovese</div>
+          </div>
+          <div class="plant-card" onclick="fillPlantForm('Peperone', 'Quadrato d\'Asti')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/Red_and_green_bell_peppers.jpg" alt="Peperone" />
+            <div class="plant-card-name">Peperone</div>
+            <div style="font-size:0.9em;color:#388e3c;">Quadrato d'Asti</div>
+          </div>
+          <div class="plant-card" onclick="fillPlantForm('Fagiolo', 'Nano')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/4/4b/Beans_in_pod.jpg" alt="Fagiolo" />
+            <div class="plant-card-name">Fagiolo</div>
+            <div style="font-size:0.9em;color:#388e3c;">Nano</div>
+          </div>
+          <div class="plant-card" onclick="fillPlantForm('Lattuga', 'Romana')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Lettuce_01.jpg" alt="Lattuga" />
+            <div class="plant-card-name">Lattuga</div>
+            <div style="font-size:0.9em;color:#388e3c;">Romana</div>
+          </div>
+        </div>
+      </div>
+      <form id="addPlantForm" style="margin-top:2rem;" onsubmit="event.preventDefault(); saveWirePlant();">
+        <label for="plantTypeWire">Nome pianta</label>
+        <input type="text" id="plantTypeWire" placeholder="es. Pomodoro"/>
+        <label for="plantVarietyWire">Varietà</label>
+        <input type="text" id="plantVarietyWire" placeholder="es. San Marzano"/>
+        <label for="plantQuantityWire">Quantità</label>
+        <input type="number" id="plantQuantityWire" min="1"/>
+        <label for="plantDateWire">Data di semina</label>
+        <input type="date" id="plantDateWire"/>
+        <label for="plantNotesWire">Note (opzionale)</label>
+        <textarea id="plantNotesWire" placeholder="Note aggiuntive"></textarea>
+        <div style="text-align:center; margin-top:1.5rem;">
+          <button class="btn-primary" type="submit" style="min-width:120px;">Salva</button>
+          <button class="btn-primary" type="button" style="min-width:120px; background: #ccc; color: #222; margin-left:1rem;" onclick="cancelAddPlantWire()">Annulla</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Popup for Trattamenti Speciali per pianta -->
+    <div id="trattamentoPopup">
+      <div class="popup-content">
+        <h3>Aggiungi trattamento speciale</h3>
+        <form id="trattamentoForm" onsubmit="event.preventDefault(); saveTrattamento();">
+          <label for="trattamentoNome">Nome trattamento</label>
+          <input type="text" id="trattamentoNome" required>
+          <label for="trattamentoCadence">Cadenza</label>
+          <input type="text" id="trattamentoCadence" placeholder="es. ogni 2 settimane" required>
+          <label for="trattamentoData">Data</label>
+          <input type="date" id="trattamentoData" required>
+          <label for="trattamentoNote">Note</label>
+          <textarea id="trattamentoNote" rows="2"></textarea>
+          <div class="popup-actions">
+            <button class="btn-primary btn-small" type="submit">Salva</button>
+            <button class="btn-primary btn-small" type="button" style="background:#ccc;color:#222;margin-left:1rem;" onclick="closeTrattamentoPopup()">Annulla</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+  <script>
+    let userProfile = null;
+    let projects = [];
+    let currentProjectIdx = null;
+    let plantLists = [];
+    let currentPlantIdxForTrattamento = null;
+
+    function showScreen(screenId) {
+      document.getElementById('onboardingForm').classList.add('hidden');
+      document.getElementById('homepage').classList.add('hidden');
+      document.getElementById('projectForm1').classList.add('hidden');
+      document.getElementById('projectForm2').classList.add('hidden');
+      document.getElementById('projectDashboard').classList.add('hidden');
+      document.getElementById('addPlantWireframe').style.display = 'none';
+      document.getElementById('editSpecsForm').classList.add('hidden');
+      if (document.getElementById(screenId)) {
+        document.getElementById(screenId).classList.remove('hidden');
+      }
+    }
+
+    document.getElementById('onboardingForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      userProfile = {
+        experience: document.getElementById('experience').value,
+        timeCommitment: document.getElementById('timeAmount').value + ' ' + document.getElementById('timeUnit').value,
+        primaryGoal: document.getElementById('goal').value,
+        seasonalTips: document.getElementById('tips').value
+      };
+      showScreen('homepage');
+      renderProjectArea();
+    });
+
+    function showHomepage() {
+      showScreen('homepage');
+      renderProjectArea();
+    }
+
+    function goHome(event) {
+      event.preventDefault();
+      showHomepage();
+    }
+
+    function renderProjectArea() {
+      const area = document.getElementById('projectArea');
+      area.innerHTML = '';
+      if (projects.length === 0) {
+        const btn = document.createElement('button');
+        btn.textContent = 'Crea il tuo primo progetto';
+        btn.className = 'btn-primary';
+        btn.onclick = showProjectForm;
+        area.appendChild(btn);
+      } else {
+        projects.forEach((proj, idx) => {
+          const card = document.createElement('div');
+          card.className = 'project-card';
+          card.innerHTML = `
+            <h3>${proj.location}</h3>
+            <div class="project-info"><strong>Tipo di terreno:</strong> ${proj.type}</div>
+            <div class="project-info"><strong>Dimensione:</strong> ${proj.size}</div>
+            <div class="project-info"><strong>Suolo:</strong> ${proj.soilConditions.join(', ') || 'N/D'}</div>
+            <div class="project-info"><strong>Sole:</strong> ${proj.sunExposure.join(', ') || 'N/D'}</div>
+            <div class="project-info"><strong>Ambiente:</strong> ${proj.environment.join(', ') || 'N/D'}</div>
+            <button class="btn-primary" onclick="openProjectDashboard(${idx})">Apri Progetto</button>
+          `;
+          area.appendChild(card);
+        });
+      }
+    }
+
+    function showProjectForm() {
+      document.getElementById('projLocation').value = '';
+      document.getElementById('projType').value = '';
+      document.getElementById('projSize').value = '';
+      document.querySelectorAll('#projectForm2 input[type=checkbox]').forEach(cb => cb.checked = false);
+      showScreen('projectForm1');
+    }
+
+    document.getElementById('nextToSoil').onclick = function() {
+      const location = document.getElementById('projLocation').value.trim();
+      const type = document.getElementById('projType').value;
+      const size = document.getElementById('projSize').value.trim();
+      if (!location) {
+        alert('Inserisci indirizzo o posizione GPS.');
+        return;
+      }
+      if (!type) {
+        alert('Seleziona il tipo di terreno.');
+        return;
+      }
+      if (!size) {
+        alert('Inserisci la dimensione del terreno.');
+        return;
+      }
+      showScreen('projectForm2');
+    };
+
+    document.getElementById('backToDetails').onclick = function() {
+      showScreen('projectForm1');
+    };
+
+    document.getElementById('projectForm2').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const location = document.getElementById('projLocation').value.trim();
+      const type = document.getElementById('projType').value;
+      const size = document.getElementById('projSize').value.trim();
+      const soilConditions = Array.from(document.querySelectorAll('input[name="soil"]:checked')).map(cb => cb.value);
+      const sunExposure = Array.from(document.querySelectorAll('input[name="sun"]:checked')).map(cb => cb.value);
+      const environment = Array.from(document.querySelectorAll('input[name="environment"]:checked')).map(cb => cb.value);
+
+      projects.push({
+        location,
+        type,
+        size,
+        soilConditions,
+        sunExposure,
+        environment
+      });
+      plantLists.push([]); // Lista piante vuota per il progetto
+      showHomepage();
+    });
+
+    function openProjectDashboard(idx) {
+      currentProjectIdx = idx;
+      showScreen('projectDashboard');
+      showDashboardTab('overview');
+    }
+
+    function showDashboardTab(tab) {
+      const proj = projects[currentProjectIdx];
+      const plants = plantLists[currentProjectIdx] || [];
+      let html = '';
+      if (tab === 'overview') {
+        html = `
+          <h2>Dashboard Progetto: ${proj.location}</h2>
+          <div class="dashboard-summary">
+            <div class="card">
+              <button class="edit-icon" title="Modifica" onclick="showSpecsEdit(event)"><span aria-hidden="true">✏️</span></button>
+              <strong>Tipo di terreno:</strong> ${proj.type}<br>
+              <strong>Dimensione:</strong> ${proj.size}<br>
+              <strong>Suolo:</strong> ${proj.soilConditions.join(', ') || 'N/D'}<br>
+              <strong>Sole:</strong> ${proj.sunExposure.join(', ') || 'N/D'}<br>
+              <strong>Ambiente:</strong> ${proj.environment.join(', ') || 'N/D'}
+            </div>
+            <div class="card">
+              <strong>Piante:</strong> ${plants.length} tipi<br>
+              <strong>Totale piante:</strong> ${plants.reduce((sum, p) => sum + p.quantity, 0)}<br>
+              <strong>Prossima attività:</strong> Innaffia i pomodori domani
+            </div>
+          </div>
+          <div class="card">
+            <strong>Lista Piante</strong>
+            <ul class="plant-list" id="plantListDashboard">
+              ${plants.length === 0 ? '<li>Nessuna pianta ancora.</li>' : plants.map(p =>
+                `<li><span>${p.type} (${p.quantity})</span><span>Piantato: ${p.date}</span></li>`
+              ).join('')}
+            </ul>
+            <button class="btn-primary" onclick="showAddPlantWireframe()">${plants.length === 0 ? 'Crea la tua prima pianta' : 'Aggiungi pianta'}</button>
+          </div>
+          <div>
+            <h3>Piante consigliate per la tua zona</h3>
+            <div class="suggested-plants-grid">
+              <div class="plant-card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg" alt="Pomodoro" />
+                <div class="plant-card-name">Pomodoro</div>
+              </div>
+              <div class="plant-card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Aubergine.jpg" alt="Melanzana" />
+                <div class="plant-card-name">Melanzana</div>
+              </div>
+              <div class="plant-card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Zucchini_and_flower.jpg" alt="Zucchina" />
+                <div class="plant-card-name">Zucchina</div>
+              </div>
+              <div class="plant-card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/Red_and_green_bell_peppers.jpg" alt="Peperoni" />
+                <div class="plant-card-name">Peperoni</div>
+              </div>
+              <div class="plant-card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4b/Beans_in_pod.jpg" alt="Fagioli" />
+                <div class="plant-card-name">Fagioli</div>
+              </div>
+              <div class="plant-card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Lettuce_01.jpg" alt="Lattuga" />
+                <div class="plant-card-name">Lattuga</div>
+              </div>
+            </div>
+          </div>
+        `;
+        document.getElementById('dashboardContent').innerHTML = html;
+      } else if (tab === 'plants') {
+        html = `
+          <h2>Le tue piante</h2>
+          ${plants.length === 0 ? '<p>Nessuna pianta ancora.</p>' : `
+            <table class="plant-table">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Varietà</th>
+                  <th>Quantità</th>
+                  <th>Data di semina</th>
+                  <th>Note</th>
+                  <th>Trattamenti speciali</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                ${plants.map((p, idx) => {
+                  let [nome, ...varietaArr] = p.type.split(' (');
+                  let varieta = varietaArr.length ? varietaArr.join(' (').replace(/\)$/, '') : '';
+                  let trattamenti = (p.trattamenti && p.trattamenti.length)
+                    ? `<ul style="padding-left:1em;margin:0;">${p.trattamenti.map(t =>
+                        `<li><strong>${t.nome}</strong> <span style="color:#388e3c;">${t.data}</span> <span style="color:#666;">${t.cadence}</span>${t.note?': '+t.note:''}</li>`
+                      ).join('')}</ul>`
+                    : '<span style="color:#888;">Nessuno</span>';
+                  return `<tr>
+                    <td>${nome}</td>
+                    <td>${varieta}</td>
+                    <td>${p.quantity}</td>
+                    <td>${p.date}</td>
+                    <td>${p.notes || ''}</td>
+                    <td>${trattamenti}</td>
+                    <td><button class="btn-primary btn-small" onclick="openTrattamentoPopup(${idx})">Trattamenti speciali</button></td>
+                  </tr>`;
+                }).join('')}
+              </tbody>
+            </table>
+          `}
+          <button class="btn-primary" style="margin-top:1.5rem;" onclick="showAddPlantWireframe()">Aggiungi pianta</button>
+        `;
+        document.getElementById('dashboardContent').innerHTML = html;
+      } else {
+        document.getElementById('dashboardContent').innerHTML = `<h2>${tab.charAt(0).toUpperCase() + tab.slice(1)} (Presto disponibile)</h2>`;
+      }
+    }
+
+    function showAddPlantWireframe() {
+      document.getElementById('addPlantWireframe').style.display = 'block';
+      document.getElementById('projectDashboard').classList.add('hidden');
+      document.getElementById('plantTypeWire').value = '';
+      document.getElementById('plantVarietyWire').value = '';
+      document.getElementById('plantQuantityWire').value = '';
+      document.getElementById('plantDateWire').value = '';
+      document.getElementById('plantNotesWire').value = '';
+    }
+
+    function cancelAddPlantWire() {
+      document.getElementById('addPlantWireframe').style.display = 'none';
+      document.getElementById('projectDashboard').classList.remove('hidden');
+      showDashboardTab('plants');
+    }
+
+    function fillPlantForm(nome, varieta) {
+      document.getElementById('plantTypeWire').value = nome;
+      document.getElementById('plantVarietyWire').value = varieta;
+    }
+
+    function saveWirePlant() {
+      const type = document.getElementById('plantTypeWire').value.trim();
+      const variety = document.getElementById('plantVarietyWire').value.trim();
+      const quantity = parseInt(document.getElementById('plantQuantityWire').value);
+      const date = document.getElementById('plantDateWire').value;
+      const notes = document.getElementById('plantNotesWire').value.trim();
+      if (!type || !quantity || !date) {
+        alert('Compila tutti i campi obbligatori.');
+        return;
+      }
+      plantLists[currentProjectIdx].push({
+        type: type + (variety ? ' (' + variety + ')' : ''),
+        quantity,
+        date,
+        notes
+      });
+      document.getElementById('addPlantWireframe').style.display = 'none';
+      document.getElementById('projectDashboard').classList.remove('hidden');
+      showDashboardTab('plants');
+    }
+
+    // EDIT SPECS LOGIC
+    function showSpecsEdit(event) {
+      if(event) { event.preventDefault(); event.stopPropagation(); }
+      const proj = projects[currentProjectIdx];
+      if (!proj) {
+        alert("Nessun progetto selezionato.");
+        return;
+      }
+      showScreen('editSpecsForm');
+      document.getElementById('editProjType').value = proj.type || "";
+      document.getElementById('editProjSize').value = proj.size || "";
+
+      Array.from(document.querySelectorAll('input[name="editSoil"]')).forEach(cb => {
+        cb.checked = (proj.soilConditions || []).includes(cb.value);
+      });
+      Array.from(document.querySelectorAll('input[name="editSun"]')).forEach(cb => {
+        cb.checked = (proj.sunExposure || []).includes(cb.value);
+      });
+      Array.from(document.querySelectorAll('input[name="editEnv"]')).forEach(cb => {
+        cb.checked = (proj.environment || []).includes(cb.value);
+      });
+    }
+    function saveSpecsEdit() {
+      const proj = projects[currentProjectIdx];
+      proj.type = document.getElementById('editProjType').value;
+      proj.size = document.getElementById('editProjSize').value;
+      proj.soilConditions = Array.from(document.querySelectorAll('input[name="editSoil"]:checked')).map(cb => cb.value);
+      proj.sunExposure = Array.from(document.querySelectorAll('input[name="editSun"]:checked')).map(cb => cb.value);
+      proj.environment = Array.from(document.querySelectorAll('input[name="editEnv"]:checked')).map(cb => cb.value);
+      showScreen('projectDashboard');
+      showDashboardTab('overview');
+    }
+    function cancelSpecsEdit() {
+      showScreen('projectDashboard');
+      showDashboardTab('overview');
+    }
+
+    // --- Trattamenti Speciali per pianta ---
+    function openTrattamentoPopup(plantIdx) {
+      currentPlantIdxForTrattamento = plantIdx;
+      document.getElementById('trattamentoNome').value = '';
+      document.getElementById('trattamentoCadence').value = '';
+      document.getElementById('trattamentoData').value = '';
+      document.getElementById('trattamentoNote').value = '';
+      document.getElementById('trattamentoPopup').style.display = 'flex';
+    }
+    function closeTrattamentoPopup() {
+      document.getElementById('trattamentoPopup').style.display = 'none';
+      currentPlantIdxForTrattamento = null;
+    }
+    function saveTrattamento() {
+      const nome = document.getElementById('trattamentoNome').value.trim();
+      const cadence = document.getElementById('trattamentoCadence').value.trim();
+      const data = document.getElementById('trattamentoData').value;
+      const note = document.getElementById('trattamentoNote').value.trim();
+      if (!nome || !cadence || !data) {
+        alert('Compila nome, cadenza e data trattamento.');
+        return;
+      }
+      const plant = plantLists[currentProjectIdx][currentPlantIdxForTrattamento];
+      if (!plant.trattamenti) plant.trattamenti = [];
+      plant.trattamenti.push({ nome, cadence, data, note });
+      closeTrattamentoPopup();
+      showDashboardTab('plants');
+    }
+
+    showScreen('onboardingForm');
+  </script>
+</body>
+</html>
