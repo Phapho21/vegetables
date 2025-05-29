@@ -159,6 +159,65 @@
     .plant-table th, .plant-table td { border: 1px solid #e0e0e0; padding: 8px 4px; text-align: left; }
     .plant-table th { background: #e8f5e9; color: #388e3c; }
     .plant-table tr:nth-child(even) { background: #f9f9f9; }
+    /* CARD STYLE FOR PLANTS ON MOBILE */
+    .plant-cards-mobile { display: none; }
+    @media (max-width: 700px) {
+      .responsive-table-container { display: none !important; }
+      .plant-cards-mobile {
+        display: flex !important;
+        flex-direction: column;
+        gap: 1.2rem;
+        margin-bottom: 1.2rem;
+      }
+      .plant-card-mobile {
+        background: #f4f9f4;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        box-shadow: 0 0 8px rgba(0,0,0,0.04);
+        padding: 1.1rem 1rem 0.7rem 1rem;
+        text-align: left;
+        position: relative;
+      }
+      .plant-card-mobile-row {
+        display: flex;
+        margin-bottom: 0.4em;
+      }
+      .plant-card-mobile-label {
+        min-width: 95px;
+        color: #388e3c;
+        font-weight: bold;
+        margin-right: 0.6em;
+        flex-shrink: 0;
+      }
+      .plant-card-mobile-value {
+        flex: 1;
+      }
+      .plant-card-mobile-trattamenti {
+        margin: 0.6em 0 0.4em 0;
+        padding: 0.7em 0.8em;
+        background: #fff;
+        border-radius: 7px;
+        border: 1px solid #e0e0e0;
+      }
+      .plant-card-mobile-trattamenti-title {
+        font-weight: bold;
+        color: #388e3c;
+        margin-bottom: 0.2em;
+        font-size: 1.02em;
+      }
+      .plant-card-mobile-trattamenti-list {
+        margin: 0;
+        padding-left: 1.3em;
+        font-size: 0.97em;
+      }
+      .plant-card-mobile-trattamenti-list li {
+        margin-bottom: 0.2em;
+      }
+      .plant-card-mobile-cta {
+        text-align: right;
+        margin-top: 0.6em;
+      }
+    }
     @media (max-width: 700px) {
       .plant-table th, .plant-table td {
         padding: 0.4em 0.3em;
@@ -645,7 +704,8 @@
         `;
         document.getElementById('dashboardContent').innerHTML = html;
       } else if (tab === 'plants') {
-        html = `
+        // DESKTOP TABLE
+        html += `
           <h2>Le tue piante</h2>
           <div class="responsive-table-container">
           ${plants.length === 0 ? '<p>Nessuna pianta ancora.</p>' : `
@@ -684,9 +744,58 @@
             </table>
           `}
           </div>
-          <button class="btn-primary" style="margin-top:1.5rem;" onclick="showAddPlantWireframe()">Aggiungi pianta</button>
+        `;
+        // MOBILE CARD VIEW
+        html += `
+        <div class="plant-cards-mobile" style="display:none;">
+        ${plants.length === 0 ? '<p>Nessuna pianta ancora.</p>' : plants.map((p, idx) => {
+          let [nome, ...varietaArr] = p.type.split(' (');
+          let varieta = varietaArr.length ? varietaArr.join(' (').replace(/\)$/, '') : '';
+          let trattamenti = (p.trattamenti && p.trattamenti.length)
+            ? `<ul class="plant-card-mobile-trattamenti-list">${p.trattamenti.map(t =>
+                `<li><strong>${t.nome}</strong> <span style="color:#388e3c;">${t.data}</span> <span style="color:#666;">${t.cadence}</span>${t.note?': '+t.note:''}</li>`
+              ).join('')}</ul>`
+            : '<span style="color:#888;">Nessuno</span>';
+          return `
+            <div class="plant-card-mobile">
+              <div class="plant-card-mobile-row"><span class="plant-card-mobile-label">Nome:</span> <span class="plant-card-mobile-value">${nome}</span></div>
+              <div class="plant-card-mobile-row"><span class="plant-card-mobile-label">Varietà:</span> <span class="plant-card-mobile-value">${varieta}</span></div>
+              <div class="plant-card-mobile-row"><span class="plant-card-mobile-label">Quantità:</span> <span class="plant-card-mobile-value">${p.quantity}</span></div>
+              <div class="plant-card-mobile-row"><span class="plant-card-mobile-label">Data semina:</span> <span class="plant-card-mobile-value">${p.date}</span></div>
+              <div class="plant-card-mobile-row"><span class="plant-card-mobile-label">Note:</span> <span class="plant-card-mobile-value">${p.notes || ''}</span></div>
+              <div class="plant-card-mobile-trattamenti">
+                <div class="plant-card-mobile-trattamenti-title">Trattamenti speciali</div>
+                ${trattamenti}
+              </div>
+              <div class="plant-card-mobile-cta">
+                <button class="btn-primary btn-small" onclick="openTrattamentoPopup(${idx})">Trattamenti speciali</button>
+              </div>
+            </div>
+          `;
+        }).join('')}
+        </div>
+        <button class="btn-primary" style="margin-top:1.5rem;" onclick="showAddPlantWireframe()">Aggiungi pianta</button>
         `;
         document.getElementById('dashboardContent').innerHTML = html;
+        // Show/hide cards/table depending on screen size
+        if (window.innerWidth <= 700) {
+          document.querySelector('.responsive-table-container').style.display = 'none';
+          document.querySelector('.plant-cards-mobile').style.display = 'flex';
+        } else {
+          document.querySelector('.responsive-table-container').style.display = '';
+          document.querySelector('.plant-cards-mobile').style.display = 'none';
+        }
+        window.onresize = function() {
+          if (document.getElementById('dashboardContent').contains(document.querySelector('.responsive-table-container'))) {
+            if (window.innerWidth <= 700) {
+              document.querySelector('.responsive-table-container').style.display = 'none';
+              document.querySelector('.plant-cards-mobile').style.display = 'flex';
+            } else {
+              document.querySelector('.responsive-table-container').style.display = '';
+              document.querySelector('.plant-cards-mobile').style.display = 'none';
+            }
+          }
+        }
       } else {
         document.getElementById('dashboardContent').innerHTML = `<h2>${tab.charAt(0).toUpperCase() + tab.slice(1)} (Presto disponibile)</h2>`;
       }
