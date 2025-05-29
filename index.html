@@ -228,7 +228,7 @@
       }
     }
     
-    /* NEW: Task Category Styles */
+    /* Task Category Styles - TASK-BASED GROUPING */
     .task-category {
       margin-bottom: 2.5rem;
       text-align: left;
@@ -791,7 +791,7 @@
       showDashboardTab('overview');
     }
 
-    // UPDATED: Generate tasks for all plants with vegetable categories
+    // UPDATED: Generate tasks grouped by TASK TYPE (not vegetable type)
     function generateTasksForPlants(plants) {
       const tasks = [];
       const today = new Date();
@@ -801,138 +801,115 @@
         
         const plantName = plant.type.toLowerCase();
         
-        // TOMATO TASKS
-        if (plantName.includes('pomodoro')) {
-          tasks.push({
-            plantName: plant.type,
-            title: 'Innaffiare',
-            description: 'Innaffiare regolarmente, evitando le foglie',
-            dueDate: new Date(today.getTime() + 1 * 24 * 60 * 60 * 1000),
-            priority: 'high',
-            status: 'upcoming',
-            category: 'Pomodori',
-            icon: '🍅'
-          });
-          tasks.push({
-            plantName: plant.type,
-            title: 'Potatura',
-            description: 'Rimuovere i germogli laterali',
-            dueDate: new Date(today.getTime() - 1 * 24 * 60 * 60 * 1000),
-            priority: 'medium',
-            status: 'overdue',
-            category: 'Pomodori',
-            icon: '🍅'
-          });
+        // Generate different tasks for each plant
+        
+        // WATERING TASK - All plants need water
+        tasks.push({
+          plantName: plant.type,
+          title: 'Innaffiare',
+          description: getWateringDescription(plantName),
+          dueDate: new Date(today.getTime() + 1 * 24 * 60 * 60 * 1000),
+          priority: getWateringPriority(plantName),
+          status: 'upcoming',
+          taskType: 'Innaffiare'
+        });
+
+        // FERTILIZING TASK - Most plants need fertilizing
+        if (!plantName.includes('lattuga') && !plantName.includes('rucola')) {
           tasks.push({
             plantName: plant.type,
             title: 'Concimazione',
-            description: 'Aggiungere fertilizzante ricco di potassio',
+            description: getFertilizingDescription(plantName),
             dueDate: new Date(today.getTime()),
             priority: 'medium',
             status: 'due-today',
-            category: 'Pomodori',
-            icon: '🍅'
+            taskType: 'Concimazione'
           });
         }
-        
-        // LEAFY GREENS TASKS
-        else if (plantName.includes('lattuga') || plantName.includes('spinaci') || plantName.includes('rucola')) {
-          tasks.push({
-            plantName: plant.type,
-            title: 'Innaffiare',
-            description: 'Mantenere il terreno umido ma non bagnato',
-            dueDate: new Date(today.getTime() + 1 * 24 * 60 * 60 * 1000),
-            priority: 'medium',
-            status: 'upcoming',
-            category: 'Verdure a Foglia',
-            icon: '🥬'
-          });
-          tasks.push({
-            plantName: plant.type,
-            title: 'Raccolta',
-            description: 'Raccogliere le foglie esterne',
-            dueDate: new Date(today.getTime() + 3 * 24 * 60 * 60 * 1000),
-            priority: 'low',
-            status: 'upcoming',
-            category: 'Verdure a Foglia',
-            icon: '🥬'
-          });
-        }
-        
-        // ROOT VEGETABLES TASKS
-        else if (plantName.includes('carota') || plantName.includes('ravanello') || plantName.includes('barbabietola')) {
-          tasks.push({
-            plantName: plant.type,
-            title: 'Diradamento',
-            description: 'Diradare le piantine per dare spazio',
-            dueDate: new Date(today.getTime() - 2 * 24 * 60 * 60 * 1000),
-            priority: 'high',
-            status: 'overdue',
-            category: 'Ortaggi da Radice',
-            icon: '🥕'
-          });
-          tasks.push({
-            plantName: plant.type,
-            title: 'Innaffiare',
-            description: 'Innaffiare delicatamente per non disturbare le radici',
-            dueDate: new Date(today.getTime() + 1 * 24 * 60 * 60 * 1000),
-            priority: 'medium',
-            status: 'upcoming',
-            category: 'Ortaggi da Radice',
-            icon: '🥕'
-          });
-        }
-        
-        // HERBS TASKS
-        else if (plantName.includes('basilico') || plantName.includes('prezzemolo') || plantName.includes('rosmarino')) {
+
+        // PRUNING TASK - Specific plants need pruning
+        if (plantName.includes('pomodoro') || plantName.includes('basilico') || plantName.includes('peperone')) {
           tasks.push({
             plantName: plant.type,
             title: 'Potatura',
-            description: 'Pizzicare i fiori per mantenere il sapore',
-            dueDate: new Date(today.getTime()),
-            priority: 'low',
-            status: 'due-today',
-            category: 'Erbe Aromatiche',
-            icon: '🌿'
+            description: getPruningDescription(plantName),
+            dueDate: new Date(today.getTime() - 1 * 24 * 60 * 60 * 1000),
+            priority: 'medium',
+            status: 'overdue',
+            taskType: 'Potatura'
           });
+        }
+
+        // HARVESTING TASK - Ready plants need harvesting
+        if (!plantName.includes('carota') || new Date(plant.date).getTime() < today.getTime() - 60 * 24 * 60 * 60 * 1000) {
           tasks.push({
             plantName: plant.type,
             title: 'Raccolta',
-            description: 'Raccogliere le foglie fresche',
-            dueDate: new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000),
+            description: getHarvestDescription(plantName),
+            dueDate: new Date(today.getTime() + getHarvestDays(plantName) * 24 * 60 * 60 * 1000),
             priority: 'low',
             status: 'upcoming',
-            category: 'Erbe Aromatiche',
-            icon: '🌿'
+            taskType: 'Raccolta'
           });
         }
-        
-        // DEFAULT VEGETABLE TASKS
-        else {
-          tasks.push({
-            plantName: plant.type,
-            title: 'Innaffiare',
-            description: 'Innaffiare secondo la cadenza',
-            dueDate: new Date(today.getTime() + 1 * 24 * 60 * 60 * 1000),
-            priority: 'medium',
-            status: 'upcoming',
-            category: 'Altri Ortaggi',
-            icon: '🥒'
-          });
-          tasks.push({
-            plantName: plant.type,
-            title: 'Controllo parassiti',
-            description: 'Controllare per parassiti e malattie',
-            dueDate: new Date(today.getTime() + 3 * 24 * 60 * 60 * 1000),
-            priority: 'low',
-            status: 'upcoming',
-            category: 'Altri Ortaggi',
-            icon: '🥒'
-          });
-        }
+
+        // PEST CONTROL TASK - All plants need monitoring
+        tasks.push({
+          plantName: plant.type,
+          title: 'Controllo Parassiti',
+          description: 'Controllare foglie e stelo per segni di parassiti o malattie',
+          dueDate: new Date(today.getTime() + 3 * 24 * 60 * 60 * 1000),
+          priority: 'low',
+          status: 'upcoming',
+          taskType: 'Controllo Parassiti'
+        });
       });
 
       return tasks;
+    }
+
+    // Helper functions for task descriptions
+    function getWateringDescription(plantName) {
+      if (plantName.includes('pomodoro')) return 'Innaffiare regolarmente, evitando le foglie';
+      if (plantName.includes('lattuga')) return 'Mantenere il terreno umido ma non bagnato';
+      if (plantName.includes('basilico')) return 'Innaffiare alla base, evitare le foglie';
+      if (plantName.includes('carota')) return 'Innaffiare delicatamente per non disturbare le radici';
+      return 'Innaffiare secondo le necessità della pianta';
+    }
+
+    function getWateringPriority(plantName) {
+      if (plantName.includes('pomodoro') || plantName.includes('basilico')) return 'high';
+      if (plantName.includes('lattuga')) return 'medium';
+      return 'medium';
+    }
+
+    function getFertilizingDescription(plantName) {
+      if (plantName.includes('pomodoro')) return 'Aggiungere fertilizzante ricco di potassio';
+      if (plantName.includes('zucchina')) return 'Concime organico ricco di azoto';
+      if (plantName.includes('peperone')) return 'Fertilizzante bilanciato NPK';
+      return 'Concime organico generale';
+    }
+
+    function getPruningDescription(plantName) {
+      if (plantName.includes('pomodoro')) return 'Rimuovere i germogli laterali (femminelle)';
+      if (plantName.includes('basilico')) return 'Pizzicare i fiori per mantenere il sapore delle foglie';
+      if (plantName.includes('peperone')) return 'Rimuovere foglie gialle e germogli deboli';
+      return 'Potatura generale della pianta';
+    }
+
+    function getHarvestDescription(plantName) {
+      if (plantName.includes('pomodoro')) return 'Raccogliere i pomodori quando sono maturi';
+      if (plantName.includes('lattuga')) return 'Raccogliere le foglie esterne';
+      if (plantName.includes('basilico')) return 'Raccogliere le foglie fresche al mattino';
+      if (plantName.includes('zucchina')) return 'Raccogliere quando le zucchine sono ancora tenere';
+      return 'Raccogliere quando il prodotto è maturo';
+    }
+
+    function getHarvestDays(plantName) {
+      if (plantName.includes('lattuga') || plantName.includes('basilico')) return 2;
+      if (plantName.includes('zucchina')) return 5;
+      if (plantName.includes('pomodoro')) return 7;
+      return 7;
     }
 
     function calculateTaskStats(tasks) {
@@ -1117,7 +1094,7 @@
           }
         }
       } else if (tab === 'tasks') {
-        // NEW VEGETABLE CATEGORY LAYOUT
+        // NEW TASK-BASED CATEGORIZATION
         const allTasks = generateTasksForPlants(plants);
         
         if (allTasks.length === 0) {
@@ -1126,27 +1103,36 @@
             <div class="no-tasks">Nessuna attività programmata. Aggiungi delle piante per vedere le attività!</div>
           `;
         } else {
-          // Group tasks by vegetable category
-          const categories = {};
+          // Group tasks by TASK TYPE instead of vegetable type
+          const taskCategories = {};
           allTasks.forEach(task => {
-            if (!categories[task.category]) {
-              categories[task.category] = [];
+            if (!taskCategories[task.taskType]) {
+              taskCategories[task.taskType] = [];
             }
-            categories[task.category].push(task);
+            taskCategories[task.taskType].push(task);
           });
 
-          html = `<h2>Attività per Categoria</h2>`;
+          // Define task icons
+          const taskIcons = {
+            'Innaffiare': '💧',
+            'Concimazione': '🌱',
+            'Potatura': '✂️',
+            'Raccolta': '🍅',
+            'Controllo Parassiti': '🔍'
+          };
+
+          html = `<h2>Attività per Tipo</h2>`;
           
-          // Render each vegetable category
-          Object.keys(categories).forEach(categoryName => {
-            const categoryTasks = categories[categoryName];
-            const categoryIcon = categoryTasks[0].icon || '🥬';
+          // Render each task category
+          Object.keys(taskCategories).forEach(taskType => {
+            const categoryTasks = taskCategories[taskType];
+            const taskIcon = taskIcons[taskType] || '📋';
             
             html += `
               <div class="task-category">
                 <div class="task-category-header">
-                  <span class="icon">${categoryIcon}</span>
-                  ${categoryName}
+                  <span class="icon">${taskIcon}</span>
+                  ${taskType}
                 </div>
                 ${categoryTasks.map((task, idx) => `
                   <div class="task-item ${task.status}" data-filter="${task.status}">
